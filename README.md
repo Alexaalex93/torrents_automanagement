@@ -1,2 +1,2 @@
-# torrent_movies_management
+# torrents_automanagement
 Script to manage all the movies downloaded
