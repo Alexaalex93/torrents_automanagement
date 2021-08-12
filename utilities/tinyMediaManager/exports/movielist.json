@@ -1,0 +1,15 @@
+{"/mnt/e/tmp/Cruella (2021)":{"title":"Cruella",
+"year":"2021",
+"original_title":"Cruella",
+"imdb_rating":"tt3228774",
+"tmdb_rating":"337404",
+"video_filename":"Cruella_(2014).mkv",
+"video_codec":"h264",
+"resolution":"1080p",
+"video_bitrate":"25327 Kbps",
+"hdr":false,
+"audio_metadata":[{"language":"eng", "codec":"DTSHD-MA", "channels":"6", "bitrate":"3309 kbps"},{"language":"spa", "codec":"AC3", "channels":"6", "bitrate":"448 kbps"},{"language":"eng", "codec":"AC3", "channels":"6", "bitrate":"384 kbps"},{"language":"eng", "codec":"AC3", "channels":"2", "bitrate":"224 kbps"},],
+"subtitles":[{"language":"eng", "forced":false},{"language":"eng", "forced":false},{"language":"spa", "forced":false},{"language":"spa", "forced":false},{"language":"eng", "forced":false},{"language":"spa", "forced":true},],
+"plot":"Ambientada en el Londres de los años 70, en plena revolución del punk rock, muestra a una joven estafadora llamada Estella, una chica inteligente y creativa, decidida a convertirse en una exitosa diseñadora de moda, que se asocia con un par de ladrones para sobrevivir en las calles de la capital británica. Pero cuando su talento para la moda llama la atención de la legendaria diseñadora, la Baronesa von Hellman, Estella cambia el rumbo de su vida hasta que una serie de acontecimientos y revelaciones que harán que Estella asuma su lado malvado y se convierta en la estridente, moderna y vengativa Cruella de Vil.",
+"tagline":"Brillante. Malvada. Un poco loca."
+},}

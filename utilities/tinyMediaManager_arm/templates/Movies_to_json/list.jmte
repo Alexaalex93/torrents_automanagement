@@ -1,0 +1,15 @@
+{${foreach movies movie}"${movie.path}":{"title":"${movie.title}",
+"year":"${movie.year}",
+"original_title":"${movie.originalTitle}",
+"imdb_rating":"${movie.imdbId}",
+"tmdb_rating":"${movie.tmdbId}",
+"video_filename":"${movie.mainVideoFile.filename}",
+"video_codec":"${movie.mediaInfoVideoCodec}",
+"resolution":"${movie.mainVideoFile.videoFormat}",
+"video_bitrate":"${movie.mediaInfoVideoBitrate} Kbps",
+"hdr":${movie.mainVideoFile.HDR},
+"audio_metadata":[${foreach movie.mediaFiles mediafiles}${foreach mediafiles.audioStreams audio}{"language":"${if audio.language}${audio.language}${else}NA${end}", "codec":"${audio.codec}", "channels":"${audio.audioChannels}", "bitrate":"${audio.bitrateInKbps}"},${end}${end}],
+"subtitles":[${foreach movie.mediaFiles mediafiles}${foreach mediafiles.subtitles subtitle}{"language":"${if subtitle.language}${subtitle.language}${else}NA${end}", "forced":${subtitle.forced}},${end}${end}],
+"plot":"${movie.plot}",
+"tagline":"${movie.tagline}"
+},${end}}
