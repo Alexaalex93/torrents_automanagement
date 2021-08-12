@@ -46,6 +46,7 @@ def rename_files(**kwargs):
     return kwargs['new_path'], os.path.split(kwargs['new_path'])[1], data['resolution'], glob.glob(f'{kwargs["new_path"]}/*-poster.jpg')[0], data['plot'], data['tagline']
 
 def scrap_movies(**kwargs):
-    os.system('../utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=Movies_to_json -eP="./exports"')
+    os.system(f'../utilities/tinyMediaManager{kwargs["arm"]}/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=Movies_to_json -eP="./exports"')
     new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'])
-    return rename_files(json_path = './exports/movielist.json', category=kwargs['category'], new_path=new_path)
+    return rename_files(json_path = f'../utilities/tinyMediamanager{kwargs["arm"]}/exports/movielist.json', category=kwargs['category'], new_path=new_path)
+

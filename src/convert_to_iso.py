@@ -29,7 +29,7 @@ def check_extension(**kwargs):
             file_name = final_name
     else:
         file_name = os.path.split(source_path)[1]
-        shutil.copy(source_path, tmp_path)
+        shutil.copy(source_path, f'{tmp_path}/{file_name}')
     send_message.to_log_bot('INFO', 'Archivo movido a carpeta temporal')
 
     return tmp_path, file_name

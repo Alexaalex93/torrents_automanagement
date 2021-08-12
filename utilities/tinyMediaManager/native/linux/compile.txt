@@ -1,2 +1,0 @@
-gcc -ansi -std=gnu89 -pedantic -Wstrict-prototypes -Wall -fPIC -c ./tinyfiledialogs.c
-gcc tinyfiledialogs.o -shared -o libtinyfiledialogs.so

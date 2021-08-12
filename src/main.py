@@ -69,18 +69,23 @@ import os
 import shutil
 
 def main(args):
+    if 'Series' in args.source_path or 'Seeding' in args.source_path:
+        return
     send_message = SendMessage()
     send_message.to_log_bot('INFO', f'Torrent descargado {args.source_path}')
     with open('../configuration/configuration.json') as configuration_file:
         configuration = configuration_file.read().replace('\\', '/')
         configuration = json.loads(configuration)
+    arm_tag = ''
+    if configuration['arm']:
+        arm_tag = '_arm'
     args.source_path = args.source_path.replace('\\', '/')
     upload_to_backup_drive(rclone_path=configuration['rclone_path'], source_path=args.source_path, remote_name=configuration['remote_backup'], remote_folder='Subidas', category=args.category)
     send_message.to_log_bot('INFO', 'Archivo subido a team backup')
 
     tmp_path, file_name = check_extension(source_path=args.source_path, category=args.category)
 
-    tmp_path, folder_name, resolution, poster_path, plot, tagline = scrap_movies(tmm_path=configuration['tmm_path'], tmm_exports=configuration['tmm_exports'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=os.path.split(args.source_path)[1])
+    tmp_path, folder_name, resolution, poster_path, plot, tagline = scrap_movies(arm=arm_tag, category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=os.path.split(args.source_path)[1])
     send_message.to_log_bot('INFO', 'Archivo scrapeado')
 
     upload_to_drive(rclone_path=configuration['rclone_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name)
