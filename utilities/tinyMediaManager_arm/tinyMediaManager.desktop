@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=tinyMediaManager
-Path=/mnt/c/src/torrents_automanagement/utilities/tinyMediaManager
-Exec=/bin/sh -c "/mnt/c/src/torrents_automanagement/utilities/tinyMediaManager/tinyMediaManager"
-Icon=/mnt/c/src/torrents_automanagement/utilities/tinyMediaManager/tmm.png
-Categories=AudioVideo;Video;Database;Java;
