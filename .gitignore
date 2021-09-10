@@ -128,8 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Config files
-configuration.json
-bot_configuration.json
-configuration/configuration.json
-configuration/bot_configuration.json
+

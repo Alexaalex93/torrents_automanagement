@@ -13,7 +13,7 @@ def check_extension(**kwargs):
     send_message = SendMessage()
 
     source_path = kwargs["source_path"]
-    tmp_path = '/'.join(source_path.split('/')[:-2])+ '/tmp'
+    tmp_path = '/'.join(source_path.split('/')[:-2])+ '/scrap'
     if not os.path.isdir(tmp_path):
         os.makedirs(tmp_path)
 

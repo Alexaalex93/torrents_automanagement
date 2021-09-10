@@ -17,7 +17,7 @@ def get_new_file_path(tmp_path, file_name):
 def rename_files(**kwargs):
 
     with open(kwargs['json_path'], encoding='utf-8') as data_file:
-        data = data_file.read().replace('\\', '/').replace(',}', '}').replace(',]', ']')
+        data = data_file.read().replace('\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
         data_content = json.loads(data)
     data = data_content[kwargs['new_path']]
     for file in glob.glob(f'{kwargs["new_path"]}/*'):
@@ -49,4 +49,3 @@ def scrap_movies(**kwargs):
     os.system('../utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=Movies_to_json -eP="./exports"')
     new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'])
     return rename_files(json_path = '../utilities/tinyMediamanager/exports/movielist.json', category=kwargs['category'], new_path=new_path)
-

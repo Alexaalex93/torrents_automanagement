@@ -1,0 +1,8 @@
+{
+        "equivalences_tags_remote":{"name_of_category_1":"name_of_remote_1", "name_of_category_2":"name_of_remote_2"},
+        "naming_conventions": {"name_of_category":"name_you_want_in_the_midle_of_file_name", "FullBD":"FullBD", "FullUHD":"FullUHD", "RemuxFHD":"Remux", "RemuxUHD":"Remux", "WedDLFHD":"WEBDL", "WedDLUHD":"WEBDL"},
+        "remote_backup":"name_of_remote_of_your_backup_drive",
+        "remote_folders":{"name_of_category":"path_to_subfolders_inside_of_the_remote_if_exists", "FullUHD":"FullBluray\\Peliculas\\ISOS\\UHD", "RemuxFHD":"", "RemuxUHD":"", "WedDLFHD":"", "WedDLUHD":""},
+        "rclone_path":"",
+		"rclone_config_path":""
+}
