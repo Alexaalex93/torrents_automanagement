@@ -62,11 +62,10 @@ def scrap_movies(**kwargs):
     new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'])#Cambiar por path relativo
     return rename_files(json_path = f'{exports_folder}/movielist.json', category=kwargs['category'], new_path=new_path, file=kwargs['file'])
 
-#, folder_name, resolution, poster_path, plot, imdb_rating, imbd_id
 def get_series_folder(**kwargs):
+    
     try:
-        #kwargs = {'json_path':"C:/Users/AlexPC/Downloads/tvshows (4).json"}
-        #"C:/Users/AlexPC/Downloads/tvshows.json"
+
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data_content = json.loads(data)
@@ -79,17 +78,13 @@ def get_series_folder(**kwargs):
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion get_series_folder(), Error: {str(exc)}')
         
 def scrap_series(**kwargs):
-    #kwargs = {'file_name':'Atracadores (2021) S01 [PACK][NF WEB-DL 1080p AVC ES-EN DD+ 5.1 Subs][HDO]'}
+    
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
-    #os.mkdir(exports_folder)
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
-    print(f'{exports_folder}/tvshows.json')
-    print(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}')
-    print(kwargs['file'])
+
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
     shutil.rmtree(exports_folder)
-    #print(glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*-poster.jpg'))
-    print(f'{kwargs["tmp_path"]}/{folder_name}/*poster.jpg')
+
     return f'{kwargs["tmp_path"]}/{folder_name}', folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*poster.jpg')[0], plot, imdb_rating, imdb_id
     

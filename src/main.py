@@ -24,6 +24,7 @@ def main(args):
     with open('/scripts/torrents_automanagement/configuration/configuration.json') as configuration_file:
         configuration = configuration_file.read().replace('\\', '/')
         configuration = json.loads(configuration)
+        
     file = os.path.split(args.source_path)[1]
     send_message.to_log_bot('INFO', f'Descargado: {file}')
     
@@ -48,14 +49,19 @@ def main(args):
     if series:
         file_name = refactor_series(tmp_path=tmp_path, file_name=file_name, file=file)
         tmp_path, folder_name, resolution, poster_path, plot, imdb_rating, imbd_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
-
+        
     else:
         tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imbd_id = scrap_movies(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, file=file)
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
-
+    
     upload_to_drive(rclone_path=configuration['rclone_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
 
-    send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, tagline=tagline)
+    
+    if series:
+        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot)
+
+    else:
+        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, tagline=tagline)
     
     send_message.to_log_bot('INFO', f'Inicio housekeeping [{file}]')
     shutil.rmtree(tmp_path)
