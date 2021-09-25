@@ -39,7 +39,6 @@ class SendMessage():
            print(str(exc))
 
     def to_telegram_channel(self, **kwargs):
-        print(kwargs)
         try:
             tagline_txt = '' 
             if 'tagline' in list(kwargs.keys()):

@@ -36,7 +36,7 @@ def check_extension(**kwargs):
                 send_message.to_log_bot('INFO', f'Moviendo carpeta a carpeta temporal [{kwargs["file"]}]')
                 shutil.copytree(source_path, f'{tmp_path}/{os.path.split(source_path)[1]}')
                 file_name = os.path.split(source_path)[1]
-                send_message.to_log_bot('INFO', f'Carpeta movido a carpeta temporal [{kwargs["file"]}]')
+                send_message.to_log_bot('INFO', f'Carpeta movida a carpeta temporal [{kwargs["file"]}]')
 
         else:   
             send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
