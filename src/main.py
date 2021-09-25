@@ -48,7 +48,7 @@ def main(args):
     
     if series:
         file_name = refactor_series(tmp_path=tmp_path, file_name=file_name, file=file)
-        tmp_path, folder_name, resolution, poster_path, plot, imdb_rating, imbd_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
+        tmp_path, folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
         
     else:
         tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = scrap_movies(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, file=file)
