@@ -46,7 +46,7 @@ def main(args):
     send_message.to_log_bot('INFO', f'Inicio scrapping [{file}]')
     
     if series:
-        refactor_series(tmp_path=tmp_path, file_name=file_name, file=file)
+        file_name = refactor_series(tmp_path=tmp_path, file_name=file_name, file=file)
         tmp_path, folder_name, resolution, poster_path, plot, imdb_rating, imbd_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
 
     else:
