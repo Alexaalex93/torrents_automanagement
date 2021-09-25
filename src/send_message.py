@@ -39,15 +39,15 @@ class SendMessage():
            print(str(exc))
 
     def to_telegram_channel(self, **kwargs):
-        print(kwargs)
         try:
             tagline_txt = '' 
             if 'tagline' in list(kwargs.keys()):
                 tagline_txt = "*Tagline:* {kwargs['tagline']}\n\n"
             markup = telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton(text='IMDB link', url=f'https://www.imdb.com/title/{kwargs["imdb_id"]}')]])
 
-            caption_text = f"*{kwargs['folder_name']}*\n\n*Resolución:* {kwargs['resolution']}\n\n*IMDB Rating:* {kwargs['imdb_rating']}\n\n{tagline_txt}Plot:* {kwargs['plot']}\n\n"
+            caption_text = f"*{kwargs['folder_name']}*\n\n*Resolución:* {kwargs['resolution']}\n\n*IMDB Rating:* {kwargs['imdb_rating']}\n\n{tagline_txt}*Plot:* {kwargs['plot']}\n\n"
             self.bot_channel.send_photo(chat_id=self.chat_id_channel,  photo=open(kwargs['poster_path'], 'rb'), caption=caption_text, parse_mode=telegram.ParseMode.MARKDOWN, timeout=5, reply_markup=markup)
 
         except Exception as exc:
             self.to_log_bot('ERROR', f'Class: SendMessage, Function: to_telegram_channel(), Error:{str(exc)}')
+            
