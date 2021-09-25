@@ -80,9 +80,9 @@ def scrap_series(**kwargs):
     #kwargs = {'file_name':'Atracadores (2021) S01 [PACK][NF WEB-DL 1080p AVC ES-EN DD+ 5.1 Subs][HDO]'}
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
     #os.mkdir(exports_folder)
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshows -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
+    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshows --renameAll')
+    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
     shutil.rmtree(exports_folder)
     return f'{kwargs["tmp_path"]}/{folder_name}', folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*-poster.jpg')[0], plot, imdb_rating, imdb_id
     
