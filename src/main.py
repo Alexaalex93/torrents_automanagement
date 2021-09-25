@@ -21,7 +21,7 @@ import threading
 def main(args):
 
     send_message = SendMessage()
-    with open('/../configuration/configuration.json') as configuration_file:
+    with open('./../configuration/configuration.json') as configuration_file:
         configuration = configuration_file.read().replace('\\', '/')
         configuration = json.loads(configuration)
     file = os.path.split(args.source_path)[1]
