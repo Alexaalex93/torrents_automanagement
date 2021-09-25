@@ -58,10 +58,10 @@ def main(args):
 
     
     if series:
-        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot)
+        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imbd_id=imbd_id)
 
     else:
-        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, tagline=tagline)
+        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, tagline=tagline, imdb_rating=imdb_rating, imbd_id=imbd_id)
     
     send_message.to_log_bot('INFO', f'Inicio housekeeping [{file}]')
     shutil.rmtree(tmp_path)

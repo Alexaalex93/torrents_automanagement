@@ -23,8 +23,9 @@ def upload_to_drive(**kwargs):
     send_message = SendMessage()
     try:
         send_message.to_log_bot('INFO', f'Iniciando subida a team definitivo [{kwargs["file"]}]')
+        print(f'{kwargs["rclone_path"]} copy \"{kwargs["tmp_path"]}\" \"{kwargs["remote_name"]}:{kwargs["remote_folder"]}/{kwargs["folder_name"]}\"')
         os.system(f'{kwargs["rclone_path"]} copy \"{kwargs["tmp_path"]}\" \"{kwargs["remote_name"]}:{kwargs["remote_folder"]}/{kwargs["folder_name"]}\"')
         send_message.to_log_bot('INFO', f'Archivo subido a team definitivo [{kwargs["file"]}]')
-
+        print
     except Exception as exc:
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion upload_to_drive(), Error: {str(exc)}')
