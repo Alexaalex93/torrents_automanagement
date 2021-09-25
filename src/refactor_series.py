@@ -9,7 +9,7 @@ import os
 import re
 import shutil 
 
-def refactor_series(kwargs):
+def refactor_series(**kwargs):
     
     if os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}'):
         folder = re.sub('(?i)s\d{1,2}.*\[.*\]', '', kwargs["file_name"]).strip()

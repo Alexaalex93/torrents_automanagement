@@ -33,8 +33,11 @@ def check_extension(**kwargs):
                 file_name = final_name.replace('-', '_').replace(' ', '_').replace('+', '').replace('.', '')
                 file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.')
             else: #Si no tenemos la carpeta BDMV en las subcarpetas, pueden ser series
+                send_message.to_log_bot('INFO', f'Moviendo carpeta a carpeta temporal [{kwargs["file"]}]')
                 shutil.copytree(source_path, f'{tmp_path}/{os.path.split(source_path)[1]}')
                 file_name = os.path.split(source_path)[1]
+                send_message.to_log_bot('INFO', f'Carpeta movido a carpeta temporal [{kwargs["file"]}]')
+
         else:   
             send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
             file_name = os.path.split(source_path)[1].replace('-', '_').replace(' ', '_').replace('+', '')
