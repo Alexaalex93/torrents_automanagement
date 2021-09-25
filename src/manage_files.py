@@ -12,7 +12,7 @@ def upload_to_backup_drive(rclone_path, source_path, remote_name, remote_folder,
     send_message = SendMessage()
     try:
         send_message.to_log_bot('INFO', f'Iniciando subida a team backup [{file}]')
-        if os.path.isdir(file):            
+        if os.path.isdir(file):
             rclone_sintax = f'{rclone_path} copy \"{source_path}\" --ignore-existing \"{remote_name}:{remote_folder}/{category}/{file}\"'
         else:
             rclone_sintax = f'{rclone_path} copy \"{source_path}\" --ignore-existing \"{remote_name}:{remote_folder}/{category}\"'
