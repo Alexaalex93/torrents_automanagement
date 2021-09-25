@@ -65,7 +65,7 @@ def scrap_movies(**kwargs):
 #, folder_name, resolution, poster_path, plot, imdb_rating, imbd_id
 def get_series_folder(**kwargs):
     try:
-        kwargs = {'json_path':"C:/Users/AlexPC/Downloads/tvshows.json"}
+        #kwargs = {'json_path':"C:/Users/AlexPC/Downloads/tvshows.json"}
         #"C:/Users/AlexPC/Downloads/tvshows.json"
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
@@ -82,6 +82,7 @@ def scrap_series(**kwargs):
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
     #os.mkdir(exports_folder)
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
+    print(kwargs['file'])
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
     shutil.rmtree(exports_folder)
