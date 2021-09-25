@@ -24,7 +24,7 @@ def get_new_file_path(tmp_path, file_name, file):
 def rename_files(**kwargs):
     try:
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
-            data = data_file.read().replace('\\\\', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
+            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data_content = json.loads(data)
         data = data_content[kwargs['new_path']]
         for file in glob.glob(f'{kwargs["new_path"]}/*'):
@@ -65,9 +65,10 @@ def scrap_movies(**kwargs):
 #, folder_name, resolution, poster_path, plot, imdb_rating, imbd_id
 def get_series_folder(**kwargs):
     try:
-        #kwargs = {'json_path':"C:/Users/AlexPC/OneDrive - Redslim/Desktop/TinyMediaManager/script_windows/exports/tvshows.json"}
+        kwargs = {'json_path':"C:/Users/AlexPC/Downloads/tvshows.json"}
+        #"C:/Users/AlexPC/Downloads/tvshows.json"
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
-            data = data_file.read().replace('\\\\', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
+            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data_content = json.loads(data)
         
         return data_content[kwargs['tmp_file_path']]['next_title'], data['resolution'], data['plot'], data['imdb_rating'], data['imdb_id']
