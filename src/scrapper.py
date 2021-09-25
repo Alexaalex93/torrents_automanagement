@@ -58,7 +58,7 @@ def rename_files(**kwargs):
 
 def scrap_movies(**kwargs):
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=Movies_to_json -eP=\"{exports_folder}\"')
+    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
     new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'])#Cambiar por path relativo
     return rename_files(json_path = f'{exports_folder}/movielist.json', category=kwargs['category'], new_path=new_path, file=kwargs['file'])
 

@@ -1,0 +1,9 @@
+{${foreach tvShows show}
+"${show.path}":{"title":"${show.title}",
+"year":"${show.year}",
+"resolution":"${show.episodes[0].mainVideoFile.videoFormat}",
+"imdb_id":"${show.imdbId}",
+"imdb_rating":"${show.rating.rating}",
+"next_title":"${show.title} (${show.year})",
+"plot":"${show.plot}"
+},${end}}
