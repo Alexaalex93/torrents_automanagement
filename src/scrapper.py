@@ -70,7 +70,9 @@ def get_series_folder(**kwargs):
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data_content = json.loads(data)
-        return data_content[kwargs['tmp_file_path']]['next_title'], data_content['resolution'], data_content['plot'], data_content['imdb_rating'], data_content['imdb_id']
+        data = data_content[kwargs['tmp_file_path']]
+
+        return data['next_title'], data['resolution'], data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
         send_message = SendMessage()
@@ -81,9 +83,9 @@ def scrap_series(**kwargs):
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
     #os.mkdir(exports_folder)
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
-    #print(f'{exports_folder}/tvshows.json')
-    #print(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}')
-    #print(kwargs['file'])
+    print(f'{exports_folder}/tvshows.json')
+    print(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}')
+    print(kwargs['file'])
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
     shutil.rmtree(exports_folder)
