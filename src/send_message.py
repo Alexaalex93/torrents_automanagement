@@ -12,7 +12,7 @@ from datetime import date
 class SendMessage():
 
     def __init__(self):
-        with open('../configuration/bot_configuration.json') as file:
+        with open('/scripts/torrents_automanagement/configuration/bot_configuration.json') as file:
             token_id_configuration = json.load(file)
 
         self.chat_id_logs = token_id_configuration['chat_id_logs']
@@ -41,7 +41,10 @@ class SendMessage():
     def to_telegram_channel(self, **kwargs):
 
         try:
-            caption_text = f"*{kwargs['folder_name']} [{kwargs['resolution']}]*\n\n*Tagline:* {kwargs['tagline']}\n\n*Plot:* {kwargs['plot']}"
+            tagline_txt = '' 
+            if 'tagline' in list(kwargs.keys()):
+                tagline_txt = "*Tagline:* {kwargs['tagline']}\n\n"
+            caption_text = f"*{kwargs['folder_name']}*\n\n*Resolución:* {kwargs['resolution']}\n\n*IMDB Rating:* {kwargs['imdb_rating']}\n\n{tagline_txt}Plot:* {kwargs['plot']}\n\n*IMDB link:*[https://www.imdb.com/title/{kwargs['imdb_id']}]"
             self.bot_channel.send_photo(chat_id=self.chat_id_channel,  photo=open(kwargs['poster_path'], 'rb'), caption=caption_text, parse_mode=telegram.ParseMode.MARKDOWN, timeout=5)
 
         except Exception as exc:

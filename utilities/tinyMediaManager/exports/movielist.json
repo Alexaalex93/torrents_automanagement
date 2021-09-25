@@ -1,0 +1,15 @@
+{"\/mnt\/e\/scrap\/Interestelar (2014)":{"title":"Interestelar",
+"year":"2014",
+"original_title":"Interstellar",
+"imdb_rating":"tt0816692",
+"tmdb_rating":"157336",
+"video_filename":"interstellar(2014).mkv",
+"video_codec":"h264",
+"resolution":"1080p",
+"video_bitrate":"10066 Kbps",
+"hdr":false,
+"audio_metadata":[{"language":"spa", "codec":"AC3", "channels":"6", "bitrate":"384 kbps"},{"language":"eng", "codec":"EAC3", "channels":"6", "bitrate":"640 kbps"},],
+"subtitles":[{"language":"spa", "forced":true},{"language":"spa", "forced":false},{"language":"eng", "forced":true},{"language":"eng", "forced":false},{"language":"ara", "forced":false},{"language":"zho", "forced":false},{"language":"zho", "forced":false},{"language":"dan", "forced":false},{"language":"deu", "forced":false},{"language":"spa", "forced":false},{"language":"spa", "forced":false},{"language":"fin", "forced":false},{"language":"fra", "forced":false},{"language":"hin", "forced":false},{"language":"ind", "forced":false},{"language":"ita", "forced":false},{"language":"kor", "forced":false},{"language":"NA", "forced":false},{"language":"nld", "forced":false},{"language":"pol", "forced":false},{"language":"por", "forced":false},{"language":"rus", "forced":false},{"language":"swe", "forced":false},{"language":"tam", "forced":false},{"language":"tel", "forced":false},{"language":"tur", "forced":false},],
+"plot":"Narra las aventuras de un grupo de exploradores que hacen uso de un agujero de gusano recientemente descubierto para superar las limitaciones de los viajes espaciales tripulados y vencer las inmensas distancias que tiene un viaje interestelar.",
+"tagline":"La humanidad naci\u00F3 en la Tierra. Nunca estuvo destinada a morir aqu\u00ED."
+},}

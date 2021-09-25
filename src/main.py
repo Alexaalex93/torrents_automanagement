@@ -1,3 +1,4 @@
+#!/bin python3
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jul 28 11:29:17 2021
@@ -5,40 +6,60 @@ Created on Wed Jul 28 11:29:17 2021
 @author: alexf
 """
 
-from convert_to_iso import check_extension
+from convert_and_move import check_extension
 from manage_files import upload_to_drive, upload_to_backup_drive
-from scrapper import scrap_movies
+from scrapper import scrap_movies, scrap_series
 from send_message import SendMessage
+from refactor_series import refactor_series
 
 import argparse
 import json
-import os
 import shutil
+import os
+import threading
 
 def main(args):
-    if 'Series' in args.source_path or 'Seeding' in args.source_path:
-        return
+
     send_message = SendMessage()
-    send_message.to_log_bot('INFO', f'Torrent descargado {args.source_path}')
-    with open('../configuration/configuration.json') as configuration_file:
+    with open('/../configuration/configuration.json') as configuration_file:
         configuration = configuration_file.read().replace('\\', '/')
         configuration = json.loads(configuration)
-
+    file = os.path.split(args.source_path)[1]
+    send_message.to_log_bot('INFO', f'Descargado: {file}')
+    
     args.source_path = args.source_path.replace('\\', '/')
-    upload_to_backup_drive(rclone_path=configuration['rclone_path'], source_path=args.source_path, remote_name=configuration['remote_backup'], remote_folder='Subidas', category=args.category)
-    send_message.to_log_bot('INFO', 'Archivo subido a team backup')
+    args.category = args.category.lower()
+    
+    #upload_to_backup_drive(configuration['rclone_path'], args.source_path, configuration['remote_backup'], 'Subidas', args.category, file)
+    t = threading.Thread(target=upload_to_backup_drive, args=(configuration['rclone_path'], args.source_path, configuration['remote_backup'], 'Subidas', args.category, file,))
+    t.start()
+    
+    if 'seeding' in args.category.lower():
+        return
+    
+    series = False
+    if 'series' in args.category.lower():
+        series = True
+        
+    tmp_path, file_name = check_extension(source_path=args.source_path, category=args.category, file=file, series=series)
+    
+    send_message.to_log_bot('INFO', f'Inicio scrapping [{file}]')
+    
+    if series:
+        refactor_series(tmp_path=tmp_path, file_name=file_name, file=file)
+        tmp_path, folder_name, resolution, poster_path, plot, imdb_rating, imbd_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
 
-    tmp_path, file_name = check_extension(source_path=args.source_path, category=args.category)
+    else:
+        tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imbd_id = scrap_movies(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, file=file)
+    send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
 
-    tmp_path, folder_name, resolution, poster_path, plot, tagline = scrap_movies(category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=os.path.split(args.source_path)[1])
-    send_message.to_log_bot('INFO', 'Archivo scrapeado')
-
-    upload_to_drive(rclone_path=configuration['rclone_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name)
-    send_message.to_log_bot('INFO', 'Archivo subido a team definitivo')
+    upload_to_drive(rclone_path=configuration['rclone_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
 
     send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, tagline=tagline)
+    
+    send_message.to_log_bot('INFO', f'Inicio housekeeping [{file}]')
     shutil.rmtree(tmp_path)
-    send_message.to_log_bot('INFO', 'Housekeeping, archivo borrado de carpeta temporal')
+    send_message.to_log_bot('INFO', f'Housekeeping, archivo borrado de carpeta temporal [{file}]')
 
 
 
