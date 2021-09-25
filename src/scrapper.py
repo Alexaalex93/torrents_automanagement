@@ -72,7 +72,7 @@ def get_series_folder(**kwargs):
             data_content = json.loads(data)
         data = data_content[kwargs['tmp_file_path']]
 
-        return data['next_title'], data['resolution'], data['plot'], data['imdb_rating'], data['imdb_id']
+        return data['next_title'].replace(':', ''), data['resolution'], data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
         send_message = SendMessage()
