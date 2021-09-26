@@ -61,7 +61,7 @@ def rename_files(**kwargs):
 
 def scrap_movies(**kwargs):
     
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0]}'
+    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0].replace(".", "").replace("(", "").replace(")", "")}'
     os.mkdir(exports_folder)
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
@@ -91,7 +91,7 @@ def get_series_folder(**kwargs):
 def scrap_series(**kwargs):
     
     if not os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file"]}'):
-        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0]}'
+        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0].replace(".", "").replace("(", "").replace(")", "")}'
     else:
         exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file"].replace(" ", "_")}'
     os.mkdir(exports_folder)
