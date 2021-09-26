@@ -27,9 +27,8 @@ def rename_files(**kwargs):
     try:
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
-            print(data)
             data_content = json.loads(data)
-            print(data_content)
+            
         data = data_content[kwargs['new_path']]
         for file in glob.glob(f'{kwargs["new_path"]}/*'):
             path, name = os.path.split(file)
@@ -47,7 +46,7 @@ def rename_files(**kwargs):
             if data['subtitles']:
                 dual_audios_subs+='Subs'
             extension = os.path.splitext(file)[1]
-            new_name = f'{path}//{data["title"].replace(":", "")} ({data["year"]}) [{data["resolution"]} {kwargs["category"]} {video_codec} {data["audio_metadata"][0]["codec"]}] [{data["video_bitrate"]}] [{dual_audios_subs}] [ID {data["tmdb_rating"]}]'
+            new_name = f'{path}//{data["title"].replace(":", "")} ({data["year"]}) [{data["resolution"]} {kwargs["category"]} {video_codec} {data["audio_metadata"][0]["codec"]}] [{data["video_bitrate"]}] [{dual_audios_subs}] [ID {data["tmdb_id"]}]'
             if extension == '.jpg':
                 new_name += re.search(r'-(poster|fanart|banner|clearart|thumb|landscape|logo|clearlogo|disc|discart|keyart)\.jpg', file).group(0)
             else:
@@ -71,7 +70,7 @@ def scrap_movies(**kwargs):
     new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'])#Cambiar por path relativo
     tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', category=kwargs['category'], new_path=new_path, file=kwargs['file'])
     
-    #shutil.rmtree(exports_folder)
+    shutil.rmtree(exports_folder)
     
     return tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id
 
@@ -101,7 +100,7 @@ def scrap_series(**kwargs):
 
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
-    #shutil.rmtree(exports_folder)
+    shutil.rmtree(exports_folder)
 
     return f'{kwargs["tmp_path"]}/{folder_name}', folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*poster.jpg')[0], plot, imdb_rating, imdb_id
     
