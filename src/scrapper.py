@@ -16,7 +16,7 @@ from send_message import SendMessage
 def get_new_file_path(tmp_path, file_name, file):
     
     try:
-        new_file_path = os.path.split(glob.glob(f'{tmp_path}/*/{file_name}')[0])[0].replace('\\', '/')
+        new_file_path = os.path.split(glob.glob(f'{tmp_path}/*/*/{file_name}')[0])[0].replace('\\', '/')
     except Exception as exc:
         send_message = SendMessage()
         send_message.to_log_bot('ERROR', f'Error con archivo [{file}] en funcion get_new_file_path(), Error: {str(exc)}')
