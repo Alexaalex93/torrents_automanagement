@@ -62,6 +62,7 @@ def rename_files(**kwargs):
 def scrap_movies(**kwargs):
     
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0]}'
+    os.mkdir(exports_folder)
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
     
@@ -93,7 +94,7 @@ def scrap_series(**kwargs):
         exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0]}'
     else:
         exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file"].replace(" ", "_")}'
-        
+    os.mkdir(exports_folder)
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
