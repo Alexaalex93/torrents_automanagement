@@ -11,6 +11,8 @@ import shutil
 
 def refactor_series(**kwargs):
     
+    print(kwargs)
+    print(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}'))
     if os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}'):
         folder_name = re.sub('(?i)s\d{1,2}.*\[.*\]', '', kwargs["file_name"]).strip()
         os.rename(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', f'{kwargs["tmp_path"]}/{folder_name}')
