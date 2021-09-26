@@ -61,14 +61,14 @@ def rename_files(**kwargs):
 
 def scrap_movies(**kwargs):
     
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file_name"].replace(" ", "_"))[0]}'
+    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0]}'
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
     
     new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'])#Cambiar por path relativo
     tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', category=kwargs['category'], new_path=new_path, file=kwargs['file'])
     
-    shutil.rmtree(exports_folder)
+    #shutil.rmtree(exports_folder)
     
     return tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id
 
@@ -89,16 +89,16 @@ def get_series_folder(**kwargs):
         
 def scrap_series(**kwargs):
     
-    if not os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}'):
-        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file_name"].replace(" ", "_"))[0]}'
+    if not os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file"]}'):
+        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0]}'
     else:
-        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
+        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file"].replace(" ", "_")}'
         
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
-    shutil.rmtree(exports_folder)
+    #shutil.rmtree(exports_folder)
 
     return f'{kwargs["tmp_path"]}/{folder_name}', folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*poster.jpg')[0], plot, imdb_rating, imdb_id
     
