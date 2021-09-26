@@ -27,7 +27,9 @@ def rename_files(**kwargs):
     try:
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
+            print(data)
             data_content = json.loads(data)
+            print(data_content)
         data = data_content[kwargs['new_path']]
         for file in glob.glob(f'{kwargs["new_path"]}/*'):
             path, name = os.path.split(file)
