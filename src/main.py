@@ -67,7 +67,6 @@ def main(args):
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
     
     upload_to_drive(rclone_path=configuration['rclone_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
-
     
     if series:
         send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=f'{folder_name} {season_episode}', resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
