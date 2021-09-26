@@ -52,7 +52,7 @@ def rename_files(**kwargs):
             else:
                 new_name += extension
             os.rename(file, new_name)
-        return kwargs['new_path'], os.path.split(kwargs['new_path'])[1], data['resolution'], glob.glob(f'{kwargs["new_path"]}/*-poster.jpg')[0], data['plot'], data['tagline'], data['imdb_rating'], data['imdb_id']
+        return kwargs['new_path'], os.path.split(kwargs['new_path'])[1], data['resolution'], glob.glob(f'{kwargs["new_path"]}/*-poster.jpg'.replace('?', ''))[0], data['plot'], data['tagline'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
         
@@ -102,6 +102,5 @@ def scrap_series(**kwargs):
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
     shutil.rmtree(exports_folder)
     
-    print(f'{kwargs["tmp_path"]}/{folder_name}/poster.jpg')
-    return f'{kwargs["tmp_path"]}/{folder_name}', folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/poster.jpg')[0], plot, imdb_rating, imdb_id
+    return f'{kwargs["tmp_path"]}/{folder_name}', folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/poster.jpg'.replace('?', ''))[0], plot, imdb_rating, imdb_id
     
