@@ -33,7 +33,7 @@
   "renameAfterScrape" : false,
   "ardAfterScrape" : false,
   "updateOnStart" : false,
-  "renamerTvShowFoldername" : "${tvShow.path}\\${showTitle} (${showYear})",
+  "renamerTvShowFoldername" : "${tvShow.path}/${showTitle} (${showYear})",
   "renamerSeasonFoldername" : "Season ${seasonNr}",
   "renamerFilename" : "${showTitle} - S${seasonNr2}E${episodeNr2} - ${title}",
   "renamerShowPathnameSpaceSubstitution" : false,
