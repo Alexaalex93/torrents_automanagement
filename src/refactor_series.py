@@ -12,7 +12,7 @@ import shutil
 def refactor_series(**kwargs):
     
     if os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}'):
-        folder_name = re.sub('(?i)s\d{1,2}.*\[.*\]', '', kwargs["file_name"]).strip()
+        folder_name = re.sub('(?i)s\d{1,2}.(.*\[.*\])?', '', kwargs["file_name"]).strip()
         os.rename(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', f'{kwargs["tmp_path"]}/{folder_name}')
         return folder_name
     else:
