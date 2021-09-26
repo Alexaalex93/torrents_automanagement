@@ -109,7 +109,7 @@
   "movieUiFilterPresets" : { },
   "movieSetDiscartFilenames" : [ "KODI_DISCART" ],
   "movieSetUiFilterPresets" : { },
-  "movieDataSource" : [ "/mnt/e/scrap_movies" ],
+  "movieDataSource" : [ "/downloads/scrap_movies" ],
   "skipFolder" : [ ],
   "badWord" : [ ],
   "configFilename" : "movies.json",

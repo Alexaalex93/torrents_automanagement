@@ -97,7 +97,7 @@
   "originalTitle" : true,
   "note" : false,
   "configFilename" : "tvShows.json",
-  "tvShowDataSource" : [ "E:\\scrap_series" ],
+  "tvShowDataSource" : [ "/downloads/scrap_series" ],
   "capitalWordsInTitles" : false,
   "postProcessTvShow" : [ ],
   "skipFolder" : [ ],
