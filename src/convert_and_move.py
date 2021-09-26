@@ -31,9 +31,9 @@ def check_extension(**kwargs):
                 
                 send_message.to_log_bot('INFO', 'FullBluray convertido a iso')
     
-                os.rename(re.sub('(?i)hdo', '', re.sub('\[.*\]', '',f'{tmp_path}/{final_name}', f'{tmp_path}/{final_name}')).replace('-', '_').replace(' ', '_').replace('+', '').replace('_.', '.'))
+                os.rename(re.sub('(?i)hdo', '', re.sub('\[.*\]', '',f'{tmp_path}/{final_name}', f'{tmp_path}/{final_name}')).replace('-', '_').replace(' ', '_').replace('+', '').replace('_.', '.').replace('...', ''))
                 file_name = final_name.replace('-', '_').replace(' ', '_').replace('+', '').replace('.', '')
-                file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.')
+                file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.').replace('...', '')
             else: #Si no tenemos la carpeta BDMV en las subcarpetas, pueden ser series
                 send_message.to_log_bot('INFO', f'Moviendo carpeta a carpeta temporal [{kwargs["file"]}]')
                 
@@ -44,7 +44,7 @@ def check_extension(**kwargs):
             send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
             
             file_name = os.path.split(source_path)[1].replace('-', '_').replace(' ', '_').replace('+', '')
-            file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.')
+            file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.').replace('...', '')
             shutil.copy(source_path, f'{tmp_path}/{file_name}')
             
         send_message.to_log_bot('INFO', f'Archivo movido a carpeta temporal [{kwargs["file"]}]')

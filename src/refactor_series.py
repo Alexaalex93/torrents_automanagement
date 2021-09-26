@@ -19,6 +19,9 @@ def refactor_series(**kwargs):
         return folder_name
     else:
         file = os.path.splitext(kwargs["file_name"])[0]
+        
+        file = os.path.splitext("¿Qué_pasaría_si..._S01E02_T'Challa_se_convirtiera_en_Star_Lord")[0]
+        
         folder_name =  re.sub('(?i)s\d{1,2}e\d{1,2}.*\[.*\]', '', file).strip()
         os.mkdir(f'{kwargs["tmp_path"]}/{folder_name}')
         shutil.move(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}',  f'{kwargs["tmp_path"]}/{folder_name}')
