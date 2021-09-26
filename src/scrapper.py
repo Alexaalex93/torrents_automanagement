@@ -14,6 +14,7 @@ import shutil
 from send_message import SendMessage
 
 def get_new_file_path(tmp_path, file_name, file):
+    
     try:
         new_file_path = os.path.split(glob.glob(f'{tmp_path}/*/{file_name}')[0])[0].replace('\\', '/')
     except Exception as exc:
@@ -22,6 +23,7 @@ def get_new_file_path(tmp_path, file_name, file):
     return new_file_path
 
 def rename_files(**kwargs):
+    
     try:
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
@@ -49,23 +51,31 @@ def rename_files(**kwargs):
             else:
                 new_name += extension
             os.rename(file, new_name)
-        return kwargs['new_path'], os.path.split(kwargs['new_path'])[1], data['resolution'], glob.glob(f'{kwargs["new_path"]}/*-poster.jpg')[0], data['plot'], data['tagline'], data['imdb_rating']
+        return kwargs['new_path'], os.path.split(kwargs['new_path'])[1], data['resolution'], glob.glob(f'{kwargs["new_path"]}/*-poster.jpg')[0], data['plot'], data['tagline'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
+        
         send_message = SendMessage()
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion rename_files(), Error: {str(exc)}')
         
 
 def scrap_movies(**kwargs):
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
+    
+    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file_name"].replace(" ", "_"))[0]}'
+
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
+    
     new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'])#Cambiar por path relativo
-    return rename_files(json_path = f'{exports_folder}/movielist.json', category=kwargs['category'], new_path=new_path, file=kwargs['file'])
+    tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', category=kwargs['category'], new_path=new_path, file=kwargs['file'])
+    
+    shutil.rmtree(exports_folder)
+    
+    return tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id
+
 
 def get_series_folder(**kwargs):
     
     try:
-
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data_content = json.loads(data)
@@ -79,7 +89,11 @@ def get_series_folder(**kwargs):
         
 def scrap_series(**kwargs):
     
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
+    if not os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file_name"]}'):
+        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file_name"].replace(" ", "_"))[0]}'
+    else:
+        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file_name"].replace(" ", "_")}'
+        
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
     folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])

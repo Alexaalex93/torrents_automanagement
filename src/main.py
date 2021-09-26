@@ -17,6 +17,17 @@ import json
 import shutil
 import os
 import threading
+import re
+
+def get_season_episode_number(file):
+    
+    season_episode = re.search(r'\s(?i)s\d{1,2}(e\d{1,2})?\s', file)[0].strip()
+    if 'e' in season_episode.lower():
+        season_episode = re.sub('(?i)s\d{1,2}e', 'Episodio ', season_episode).strip()
+    else:
+        season_episode = re.sub('(?i)s', 'Temporada ', season_episode).strip()
+        
+    return season_episode
 
 def main(args):
 
@@ -41,24 +52,25 @@ def main(args):
     series = False
     if 'series' in args.category.lower():
         series = True
-        
+        season_episode = get_season_episode_number(file)
+          
     tmp_path, file_name = check_extension(source_path=args.source_path, category=args.category, file=file, series=series)
     
     send_message.to_log_bot('INFO', f'Inicio scrapping [{file}]')
     
     if series:
         file_name = refactor_series(tmp_path=tmp_path, file_name=file_name, file=file)
-        tmp_path, folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
-        
+        tmp_path, folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)    
     else:
         tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = scrap_movies(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, file=file)
+        
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
     
     upload_to_drive(rclone_path=configuration['rclone_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
 
     
     if series:
-        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
+        send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=f'{folder_name} {season_episode}', resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
 
     else:
         send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, tagline=tagline, imdb_rating=imdb_rating, imdb_id=imdb_id)
