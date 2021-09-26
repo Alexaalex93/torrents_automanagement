@@ -26,7 +26,7 @@
   "renameAfterScrape" : false,
   "ardAfterScrape" : false,
   "updateOnStart" : false,
-  "renamerPathname" : "${title} ${videoFormat}/${title} ${- ,edition,} (${year})",
+  "renamerPathname" : "${title} ${videoFormat}\\${title} ${- ,edition,} (${year})",
   "renamerFilename" : "",
   "renamerPathnameSpaceSubstitution" : false,
   "renamerPathnameSpaceReplacement" : "_",
