@@ -13,15 +13,16 @@ import shutil
 
 from send_message import SendMessage
 
-def get_new_file_path(tmp_path, file_name, file):
+def get_new_file_path(tmp_path, file_name, file, script_path):
     
     try:
         new_file_path = os.path.split(glob.glob(f'{tmp_path}/*/*/{file_name}')[0])[0].replace('\\', '/')
-    except Exception as exc:
-        send_message = SendMessage()
-        send_message.to_log_bot('ERROR', f'Error con archivo [{file}] en funcion get_new_file_path(), Error: {str(exc)}')
-    return new_file_path
+        return new_file_path
 
+    except Exception as exc:
+        send_message = SendMessage(script_path)
+        send_message.to_log_bot('ERROR', f'Error con archivo [{file}] en funcion get_new_file_path(), Error: {str(exc)}')
+        
 def rename_files(**kwargs):
     
     try:
@@ -56,7 +57,7 @@ def rename_files(**kwargs):
 
     except Exception as exc:
         
-        send_message = SendMessage()
+        send_message = SendMessage(kwargs['script_path'])
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion rename_files(), Error: {str(exc)}')
         
 
@@ -67,8 +68,8 @@ def scrap_movies(**kwargs):
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
     
-    new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'])#Cambiar por path relativo
-    tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', category=kwargs['category'], new_path=new_path, file=kwargs['file'])
+    new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'], kwargs['script_path'])#Cambiar por path relativo
+    tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', script_path=kwargs['script_path'], category=kwargs['category'], new_path=new_path, file=kwargs['file'])
     
     shutil.rmtree(exports_folder)
     
@@ -82,11 +83,11 @@ def get_series_folder(**kwargs):
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data_content = json.loads(data)
         data = data_content[kwargs['tmp_file_path']]
-        print(data)
+
         return data['next_title'].replace(':', ''), data['resolution'], data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
-        send_message = SendMessage()
+        send_message = SendMessage(kwargs['script_path'])
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion get_series_folder(), Error: {str(exc)}')
         
 def scrap_series(**kwargs):
@@ -98,11 +99,9 @@ def scrap_series(**kwargs):
     os.mkdir(exports_folder)
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
     
-    folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
-    print(folder_name, resolution, plot, imdb_rating, imdb_id)
+    folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', script_path=kwargs['script_path'], tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
-    #shutil.rmtree(exports_folder)
-    
-    return f'{kwargs["tmp_path"]}/{folder_name}', folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/*/{folder_name}/poster.jpg'.replace('?', ''))[0], plot, imdb_rating, imdb_id
+    shutil.rmtree(exports_folder)
+    return glob.glob(f'{kwargs["tmp_path"]}/*/{folder_name}')[0], folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/*/{folder_name}/poster.jpg'.replace('?', ''))[0], plot, imdb_rating, imdb_id
     

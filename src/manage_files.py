@@ -8,8 +8,8 @@ Created on Thu Jul 29 10:12:38 2021
 import os
 from send_message import SendMessage
 
-def upload_to_backup_drive(rclone_path, source_path, remote_name, remote_folder, category, file):
-    send_message = SendMessage()
+def upload_to_backup_drive(rclone_path, script_path, source_path, remote_name, remote_folder, category, file):
+    send_message = SendMessage(script_path)
     try:
         send_message.to_log_bot('INFO', f'Iniciando subida a team backup [{file}]')
 
@@ -19,7 +19,6 @@ def upload_to_backup_drive(rclone_path, source_path, remote_name, remote_folder,
             rclone_sintax = f'{rclone_path} copy \"{source_path}\" --ignore-existing \"{remote_name}:{remote_folder}/{category}\"'
 
         os.system(rclone_sintax)
-        
         send_message.to_log_bot('INFO', f'Archivo subido a team backup [{file}]')
 
     except Exception as exc:
@@ -27,7 +26,7 @@ def upload_to_backup_drive(rclone_path, source_path, remote_name, remote_folder,
 
 
 def upload_to_drive(**kwargs):
-    send_message = SendMessage()
+    send_message = SendMessage(kwargs['script_path'])
     try:
         send_message.to_log_bot('INFO', f'Iniciando subida a team definitivo [{kwargs["file"]}]')
         os.system(f'{kwargs["rclone_path"]} copy \"{kwargs["tmp_path"].replace("?", "")}\" --ignore-existing \"{kwargs["remote_name"]}:{kwargs["remote_folder"]}/{kwargs["folder_name"].replace("?", "")}\"')

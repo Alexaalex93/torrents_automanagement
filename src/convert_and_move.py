@@ -11,7 +11,7 @@ from send_message import SendMessage
 import re 
 
 def check_extension(**kwargs):
-    send_message = SendMessage()
+    send_message = SendMessage(kwargs['script_path'])
 
     try:
         source_path = kwargs["source_path"]
@@ -43,8 +43,13 @@ def check_extension(**kwargs):
         else:   
             send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
             
-            file_name = os.path.split(source_path)[1].replace('-', '_').replace(' ', '_').replace('+', '')
-            file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.').replace('...', '')
+            file, extension = os.path.splitext(os.path.split(source_path)[1])
+            video_format = re.findall(r'(?i)(1080p|2160p)', file)[0]
+            file_name = re.sub(r'\-', '_', re.sub(r'(?i)(hdo|\[.*\]|\_\.|\.\.\.|\+)', '', file))
+            file_name = f'{file_name} {video_format}{extension}'
+
+            #file_name = os.path.split(source_path)[1].replace('-', '_').replace(' ', '_').replace('+', '')
+            #file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.').replace('...', '')                                                                                                                                                             
             shutil.copy(source_path, f'{tmp_path}/{file_name}')
             
         send_message.to_log_bot('INFO', f'Archivo movido a carpeta temporal [{kwargs["file"]}]')

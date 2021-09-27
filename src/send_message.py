@@ -11,8 +11,8 @@ from datetime import date
 
 class SendMessage():
 
-    def __init__(self):
-        with open('/scripts/torrents_automanagement/configuration/bot_configuration.json') as file:
+    def __init__(self, script_path):
+        with open(f'{script_path}/configuration/bot_configuration.json') as file:
             token_id_configuration = json.load(file)
 
         self.chat_id_logs = token_id_configuration['chat_id_logs']

@@ -20,22 +20,26 @@ import threading
 import re
 
 def get_season_episode_number(file):
-    
     season_episode = re.search(r'\s(?i)s\d{1,2}(e\d{1,2})?\s', file)[0].strip()
     if 'e' in season_episode.lower():
-        season_episode = re.sub('(?i)s\d{1,2}e', 'Episodio ', season_episode).strip()
+        season = re.search(r'(?i)s\d{1,2}', season_episode)[0].lower().replace('s', '\n\nTemporada ')
+        episode = re.search(r'(?i)e\d{1,2}', season_episode)[0].lower().replace('e', ' Episodio ')
+        season_episode = season + episode
     else:
-        season_episode = re.sub('(?i)s', 'Temporada ', season_episode).strip()
+        season_episode = season_episode.lower().replace('s', '\n\nTemporada Completa ')
         
     return season_episode
 
 def main(args):
 
-    send_message = SendMessage()
     with open('/scripts/torrents_automanagement/configuration/configuration.json') as configuration_file:
+    #with open('/mnt/c/src/torrents_automanagement/configuration/configuration.json') as configuration_file:
+
         configuration = configuration_file.read().replace('\\', '/')
         configuration = json.loads(configuration)
         
+    send_message = SendMessage(configuration['script_path'])
+    
     file = os.path.split(args.source_path)[1]
     send_message.to_log_bot('INFO', f'Descargado: {file}')
     
@@ -43,7 +47,7 @@ def main(args):
     args.category = args.category.lower()
     
     #upload_to_backup_drive(configuration['rclone_path'], args.source_path, configuration['remote_backup'], 'Subidas', args.category, file)
-    t = threading.Thread(target=upload_to_backup_drive, args=(configuration['rclone_path'], args.source_path, configuration['remote_backup'], 'Subidas', args.category, file,))
+    t = threading.Thread(target=upload_to_backup_drive, args=(configuration['rclone_path'], configuration['script_path'], args.source_path, configuration['remote_backup'], 'Subidas', args.category, file,))
     t.start()
     
     if 'seeding' in args.category.lower():
@@ -54,7 +58,7 @@ def main(args):
         series = True
         season_episode = get_season_episode_number(file)
           
-    tmp_path, file_name = check_extension(source_path=args.source_path, category=args.category, file=file, series=series)
+    tmp_path, file_name = check_extension(source_path=args.source_path, script_path=configuration['script_path'], category=args.category, file=file, series=series)
     
     send_message.to_log_bot('INFO', f'Inicio scrapping [{file}]')
     
@@ -66,7 +70,7 @@ def main(args):
         
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
     
-    upload_to_drive(rclone_path=configuration['rclone_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
+    upload_to_drive(rclone_path=configuration['rclone_path'], script_path = configuration['script_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
     
     if series:
         send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=f'{folder_name} {season_episode}', resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
@@ -75,7 +79,7 @@ def main(args):
         send_message.to_telegram_channel(tmp_path=tmp_path, folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
     
     send_message.to_log_bot('INFO', f'Inicio housekeeping [{file}]')
-    shutil.rmtree(tmp_path.replace('?', ''))
+    shutil.rmtree('/'.join(tmp_path.replace('?', '').split('/')[:-1]))
     send_message.to_log_bot('INFO', f'Housekeeping, archivo borrado de carpeta temporal [{file}]')
 
 
