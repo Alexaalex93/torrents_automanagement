@@ -13,25 +13,17 @@ import shutil
 
 from send_message import SendMessage
 
-def get_new_file_path(tmp_path, file_name, file, script_path):
-    
-    try:
-        new_file_path = os.path.split(glob.glob(f'{tmp_path}/*/*/{file_name}')[0])[0].replace('\\', '/')
-        return new_file_path
-
-    except Exception as exc:
-        send_message = SendMessage(script_path)
-        send_message.to_log_bot('ERROR', f'Error con archivo [{file}] en funcion get_new_file_path(), Error: {str(exc)}')
-        
 def rename_files(**kwargs):
-    
+
     try:
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data_content = json.loads(data)
-            
-        data = data_content[kwargs['new_path']]
-        for file in glob.glob(f'{kwargs["new_path"]}/*'):
+        movie_path = glob.glob(f'{kwargs["tmp_path"]}/*')[0]
+        data = data_content[movie_path]
+        folder_name = data['next_title'].replace('?', '').replace(':', '')
+
+        for file in glob.glob(f'{movie_path}/*'):
             path, name = os.path.split(file)
             video_codec = data['video_codec'].replace('h', 'x')
             dual_audios_subs = ''
@@ -47,61 +39,79 @@ def rename_files(**kwargs):
             if data['subtitles']:
                 dual_audios_subs+='Subs'
             extension = os.path.splitext(file)[1]
-            new_name = f'{path}//{data["title"].replace(":", "")} ({data["year"]}) [{data["resolution"]} {kwargs["category"]} {video_codec} {data["audio_metadata"][0]["codec"]}] [{data["video_bitrate"]}] [{dual_audios_subs}] [ID {data["tmdb_id"]}]'
+            new_name = f'{path}//{folder_name} [{data["resolution"]} {kwargs["category"]} {video_codec} {data["audio_metadata"][0]["codec"]}] [{data["video_bitrate"]}] [{dual_audios_subs}] [ID {data["tmdb_id"]}]'
             if extension == '.jpg':
                 new_name += re.search(r'-(poster|fanart|banner|clearart|thumb|landscape|logo|clearlogo|disc|discart|keyart)\.jpg', file).group(0)
             else:
                 new_name += extension
             os.rename(file, new_name)
-        return kwargs['new_path'], os.path.split(kwargs['new_path'])[1], data['resolution'], glob.glob(f'{kwargs["new_path"]}/*-poster.jpg'.replace('?', ''))[0], data['plot'], data['tagline'], data['imdb_rating'], data['imdb_id']
+        return folder_name, data['resolution'], glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*-poster.jpg')[0], data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
-        
+
         send_message = SendMessage(kwargs['script_path'])
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion rename_files(), Error: {str(exc)}')
-        
+
 
 def scrap_movies(**kwargs):
-    
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0].replace(".", "").replace("(", "").replace(")", "")}'
+
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", 'r') as jsonFile:
+        data_config = json.load(jsonFile)
+
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", 'w') as jsonFile:
+       data_config['movieDataSource'].append(f'{kwargs["tmp_path"]}')
+       json.dump(data_config, jsonFile, indent=4)
+
+    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}}}'
     os.mkdir(exports_folder)
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
-    
-    new_path = get_new_file_path(kwargs['tmp_path'], kwargs['file_name'], kwargs['file'], kwargs['script_path'])#Cambiar por path relativo
-    tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', script_path=kwargs['script_path'], category=kwargs['category'], new_path=new_path, file=kwargs['file'])
-    
+
+    folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], category=kwargs['category'], file=kwargs['file'])
+
     shutil.rmtree(exports_folder)
-    
-    return tmp_path, folder_name, resolution, poster_path, plot, tagline, imdb_rating, imdb_id
+
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", 'r') as jsonFile:
+        data_config = json.load(jsonFile)
+
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", 'w') as jsonFile:
+        data_config['movieDataSource'].remove(kwargs["tmp_path"])
+        json.dump(data_config, jsonFile, indent=4)
+    return folder_name, resolution, poster_path, plot, imdb_rating, imdb_id
 
 
-def get_series_folder(**kwargs):
-    
-    try:
-        with open(kwargs['json_path'], encoding='utf-8') as data_file:
-            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
-            data_content = json.loads(data)
-        data = data_content[kwargs['tmp_file_path']]
-
-        return data['next_title'].replace(':', ''), data['resolution'], data['plot'], data['imdb_rating'], data['imdb_id']
-
-    except Exception as exc:
-        send_message = SendMessage(kwargs['script_path'])
-        send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion get_series_folder(), Error: {str(exc)}')
-        
 def scrap_series(**kwargs):
-    
-    if not os.path.isdir(f'{kwargs["tmp_path"]}/{kwargs["file"]}'):
-        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{os.path.splitext(kwargs["file"].replace(" ", "_"))[0].replace(".", "").replace("(", "").replace(")", "")}'
-    else:
-        exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/exports_{kwargs["file"].replace(" ", "_")}'
-    os.mkdir(exports_folder)
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
-    
-    folder_name, resolution, plot, imdb_rating, imdb_id = get_series_folder(json_path=f'{exports_folder}/tvshows.json', script_path=kwargs['script_path'], tmp_file_path=f'{kwargs["tmp_path"]}/{kwargs["file_name"]}', file=kwargs['file'])
 
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow --renameAll')
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", 'r') as jsonFile:
+        data_config = json.load(jsonFile)
+
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", 'w') as jsonFile:
+        data_config['tvShowDataSource'].append(kwargs["tmp_path"])
+        json.dump(data_config, jsonFile, indent=4)
+
+    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
+
+    os.mkdir(exports_folder)
+    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
+
+
+    with open(f'{exports_folder}/tvshows.json', encoding='utf-8') as data_file:
+        data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
+        data_content = json.loads(data)
+
+    data_json = data_content[glob.glob(f'{kwargs["tmp_path"]}/*')[0]]
+
+    series_name = data_json['next_title'].replace('?', '').replace(':', '')
+
     shutil.rmtree(exports_folder)
-    return glob.glob(f'{kwargs["tmp_path"]}/*/{folder_name}')[0], folder_name, resolution, glob.glob(f'{kwargs["tmp_path"]}/*/{folder_name}/poster.jpg'.replace('?', ''))[0], plot, imdb_rating, imdb_id
-    
+
+
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", 'r') as jsonFile:
+        data_config = json.load(jsonFile)
+
+    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", 'w') as jsonFile:
+        data_config['tvShowDataSource'].remove(kwargs["tmp_path"])
+        json.dump(data_config, jsonFile, indent=4)
+
+
+    return series_name, data_json['resolution'], glob.glob(f'{kwargs["tmp_path"]}/{series_name}/poster.jpg')[0], data_json['plot'], data_json['imdb_rating'], data_json['imdb_id']

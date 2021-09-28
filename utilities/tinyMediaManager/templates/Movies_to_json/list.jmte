@@ -1,5 +1,6 @@
 {${foreach movies movie}"${movie.path}":{"title":"${movie.title}",
 "year":"${movie.year}",
+"next_title":"${movie.title} (${movie.year})",
 "original_title":"${movie.originalTitle}",
 "imdb_id":"${movie.imdbId}",
 "imdb_rating":"${movie.rating.rating}",

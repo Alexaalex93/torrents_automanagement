@@ -28,19 +28,17 @@ class SendMessage():
     def to_log_bot(self, level, message):
 
         try:
-           time.sleep(1)
            current_time = time.strftime("%H:%M:%S", time.localtime())
            today = date.today().strftime("%d-%m-%Y")
            formatted_message = f'{today} {current_time} - {level} - {message}'
            self.bot_logs.send_message(chat_id=self.chat_id_logs, text=formatted_message, timeout=5)
-           time.sleep(1)
         except Exception as exc:
            self.to_log_bot('ERROR', f'Class: SendMessage, Function: to_log_bot(), Error:{str(exc)}')
            print(str(exc))
 
     def to_telegram_channel(self, **kwargs):
-        try:
 
+        try:
             markup = telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton(text='IMDB link', url=f'https://www.imdb.com/title/{kwargs["imdb_id"]}')]])
 
             caption_text = f"*{kwargs['folder_name']}*\n\n*Resolución:* {kwargs['resolution']}\n\n*IMDB Rating:* {kwargs['imdb_rating']}\n\n*Plot:* {kwargs['plot']}\n\n"
@@ -48,4 +46,3 @@ class SendMessage():
 
         except Exception as exc:
             self.to_log_bot('ERROR', f'Class: SendMessage, Function: to_telegram_channel(), Error:{str(exc)}')
-            
