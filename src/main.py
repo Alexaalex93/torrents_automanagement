@@ -34,12 +34,13 @@ def get_season_episode_number(file):
 
 def create_hash_folder(tmp_path, file):
     hash_folder = hashlib.md5(file.encode('utf-8')).hexdigest()
+    if  os.path.isdir(f'{tmp_path}/{hash_folder}'):
+        shutil.rmtree(f'{tmp_path}/{hash_folder}')
     os.mkdir(f'{tmp_path}/{hash_folder}')
     return f'{tmp_path}/{hash_folder}', hash_folder
 
 def main(args):
 
-    #with open('/mnt/c/src/torrents_automanagement_pc/configuration/configuration.json') as configuration_file:
     with open('/scripts/torrents_automanagement/configuration/configuration.json') as configuration_file:
 
         configuration = configuration_file.read().replace('\\', '/')
@@ -91,7 +92,6 @@ def main(args):
     else:
         send_message.to_telegram_channel(folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
 
-    print('borrar', tmp_path)
     send_message.to_log_bot('INFO', f'Inicio housekeeping [{file}]')
     shutil.rmtree(tmp_path)
     send_message.to_log_bot('INFO', f'Housekeeping, archivo borrado de carpeta temporal [{file}]')

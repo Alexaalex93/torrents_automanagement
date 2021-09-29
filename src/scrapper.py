@@ -62,7 +62,9 @@ def scrap_movies(**kwargs):
        data_config['movieDataSource'].append(f'{kwargs["tmp_path"]}')
        json.dump(data_config, jsonFile, indent=4)
 
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}}}'
+    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
+    if  os.path.isdir(exports_folder):
+        shutil.rmtree(exports_folder)
     os.mkdir(exports_folder)
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
@@ -90,7 +92,8 @@ def scrap_series(**kwargs):
         json.dump(data_config, jsonFile, indent=4)
 
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
-
+    if  os.path.isdir(exports_folder):
+        shutil.rmtree(exports_folder)
     os.mkdir(exports_folder)
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
