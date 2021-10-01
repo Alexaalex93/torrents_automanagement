@@ -63,11 +63,14 @@ def scrap_movies(**kwargs):
        json.dump(data_config, jsonFile, indent=4)
 
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
-    if  os.path.isdir(exports_folder):
+    if os.path.isdir(exports_folder):
         shutil.rmtree(exports_folder)
     os.mkdir(exports_folder)
 
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
+    if not os.path.isfile(f'{exports_folder}/movielist.json'):
+        os.remove(f'{kwargs["script_path"]}/utilities/tinyMediaManager/data/movies.db')
+        os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
 
     folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], category=kwargs['category'], file=kwargs['file'])
 
@@ -96,6 +99,10 @@ def scrap_series(**kwargs):
         shutil.rmtree(exports_folder)
     os.mkdir(exports_folder)
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
+
+    if not os.path.isfile(f'{exports_folder}/tvShows.json'):
+        os.remove(f'{kwargs["script_path"]}/utilities/tinyMediaManager/data/tvshows.db')
+        os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
 
     with open(f'{exports_folder}/tvshows.json', encoding='utf-8') as data_file:
