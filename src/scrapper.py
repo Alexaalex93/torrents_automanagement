@@ -52,6 +52,40 @@ def rename_files(**kwargs):
         send_message = SendMessage(kwargs['script_path'])
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion rename_files(), Error: {str(exc)}')
 
+def modify_movies_json(movies_json_path, tmp_path):
+
+    with open(movies_json_path, 'r') as jsonFile:
+        data_config = json.load(jsonFile)
+
+    with open(movies_json_path, 'w') as jsonFile:
+       data_config['movieDataSource'].append(tmp_path)
+
+       data_config['nfoFilenames'] = [ "FILENAME_NFO" ]
+       data_config['posterFilenames'] = [ "FILENAME_POSTER" ]
+       data_config['fanartFilenames'] = [ "FILENAME_FANART" ]
+       data_config['extraFanartFilenames'] = [ "FILENAME_EXTRAFANART" ]
+       data_config['bannerFilenames'] = [ "FILENAME_BANNER" ]
+       data_config['clearartFilenames'] = [ "FILENAME_CLEARART" ]
+       data_config['thumbFilenames'] = [ "FILENAME_LANDSCAPE" ]
+       data_config['logoFilenames'] = [ "FILENAME_LOGO" ]
+       data_config['keyartFilenames'] = [ "FILENAME_KEYART" ]
+       data_config['artworkScrapers'] = [ "tmdb", "mpdbtv", "imdb", "fanarttv", "ffmpeg" ]
+       data_config['writeCleanNfo'] = True
+       data_config['nfoLanguage'] = 'es'
+       data_config['renamerPathname'] = '${title} ${- ,edition,} (${year})'
+       data_config['renamerFilename'] = ''
+       data_config['movieScraper'] = 'tmdb'
+       data_config['scraperLanguage'] = 'es'
+       data_config['certificationCountry'] = 'ES'
+       data_config['releaseDateCountry'] = 'ES'
+       data_config['ratingSources'] = 'imdb'
+       data_config['scraperMetadataConfig'] = [ "ID", "TITLE", "ORIGINAL_TITLE", "TAGLINE", "PLOT", "YEAR", "RELEASE_DATE", "RATING", "TOP250", "RUNTIME", "CERTIFICATION", "GENRES", "SPOKEN_LANGUAGES", "COUNTRY", "PRODUCTION_COMPANY", "TAGS", "COLLECTION", "TRAILER", "ACTORS", "PRODUCERS", "DIRECTORS", "WRITERS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "EXTRAFANART", "EXTRATHUMB", "ID", "TITLE", "ORIGINAL_TITLE", "TAGLINE", "PLOT", "YEAR", "RELEASE_DATE", "RATING", "TOP250", "RUNTIME", "CERTIFICATION", "GENRES", "SPOKEN_LANGUAGES", "COUNTRY", "PRODUCTION_COMPANY", "TAGS", "COLLECTION", "TRAILER", "ACTORS", "PRODUCERS", "DIRECTORS", "WRITERS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "EXTRAFANART", "EXTRATHUMB" ]
+       data_config['scraperFallback'] = True
+       data_config['imageScraperLanguage'] = 'es'
+
+
+       json.dump(data_config, jsonFile, indent=4)
+
 
 def scrap_movies(**kwargs):
 
@@ -84,6 +118,46 @@ def scrap_movies(**kwargs):
         json.dump(data_config, jsonFile, indent=4)
     return folder_name, resolution, poster_path, plot, imdb_rating, imdb_id
 
+def modify_tvshows_json(tvshows_json_path, tmp_path):
+    with open(tvshows_json_path, 'r') as jsonFile:
+            data_config = json.load(jsonFile)
+
+    with open(tvshows_json_path, 'w') as jsonFile:
+        data_config['tvShowDataSource'].append(tmp_path)
+
+        data_config['nfoFilenames'] = ["TV_SHOW"]
+        data_config['posterFilenames'] = ["POSTER"]
+        data_config['fanartFilenames'] = ["FANART"]
+        data_config['bannerFilenames'] = ["BANNER"]
+        data_config['clearartFilenames'] = ["CLEARART"]
+        data_config['thumbFilenames'] = ["THUMB"]
+        data_config['clearlogoFilenames'] = ["CLEARLOGO"]
+        data_config['logoFilenames'] = ["LOGO"]
+        data_config['characterartFilenames'] = ["CHARACTERART"]
+        data_config['keyartFilenames'] = ["KEYART"]
+        data_config['seasonPosterFilenames'] = ["SEASON_POSTER"]
+        data_config['seasonBannerFilenames'] = ["SEASON_BANNER"]
+        data_config['seasonThumbFilenames'] = ["SEASON_THUMB"]
+        data_config['episodeNfoFilenames'] = ["FILENAME"]
+        data_config['episodeThumbFilenames'] = ["FILENAME_THUMB"]
+
+        data_config['nfoLanguage'] = 'es'
+        data_config['scraper'] = 'tmdb'
+        data_config['scraperLanguage'] = 'es'
+        data_config['certificationCountry'] = 'ES'
+        data_config['releaseDateCountry'] = 'ES'
+        data_config['tvShowScraperMetadataConfig'] = [ "ID", "TITLE", "ORIGINAL_TITLE", "PLOT", "YEAR", "AIRED", "STATUS", "RATING", "RUNTIME", "CERTIFICATION", "GENRES", "COUNTRY", "STUDIO", "TAGS", "TRAILER", "SEASON_NAMES", "ACTORS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "CHARACTERART", "EXTRAFANART", "SEASON_POSTER", "SEASON_BANNER", "SEASON_THUMB", "THEME", "ID", "TITLE", "ORIGINAL_TITLE", "PLOT", "YEAR", "AIRED", "STATUS", "RATING", "RUNTIME", "CERTIFICATION", "GENRES", "COUNTRY", "STUDIO", "TAGS", "TRAILER", "SEASON_NAMES", "ACTORS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "CHARACTERART", "EXTRAFANART", "SEASON_POSTER", "SEASON_BANNER", "SEASON_THUMB", "THEME" ]
+        data_config['episodeScraperMetadataConfig'] = [ "TITLE", "ORIGINAL_TITLE", "PLOT", "AIRED_SEASON_EPISODE", "DVD_SEASON_EPISODE", "DISPLAY_SEASON_EPISODE", "AIRED", "RATING", "TAGS", "ACTORS", "DIRECTORS", "WRITERS", "PRODUCERS", "THUMB", "TITLE", "ORIGINAL_TITLE", "PLOT", "AIRED_SEASON_EPISODE", "DVD_SEASON_EPISODE", "DISPLAY_SEASON_EPISODE", "AIRED", "RATING", "TAGS", "ACTORS", "DIRECTORS", "WRITERS", "PRODUCERS", "THUMB" ]
+        data_config['imageScraperLanguage'] = 'es'
+        data_config['subtitleScraperLanguage'] = 'es'
+        data_config['preferredRating'] = 'imdb'
+        data_config['artworkScrapers'] = ["tvdb", "tmdb", "imdb", "ffmpeg", "fanarttv", "anidb" ]
+        data_config['writeCleanNfo'] = True
+        data_config['seasonArtworkFallback'] = True
+
+
+
+        json.dump(data_config, jsonFile, indent=4)
 
 def scrap_series(**kwargs):
 
