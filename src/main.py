@@ -42,6 +42,7 @@ def create_hash_folder(tmp_path, file):
 def main(args):
 
     with open('/scripts/torrents_automanagement/configuration/configuration.json') as configuration_file:
+    #with open('/mnt/c/src/torrents_automanagement_pc/configuration/configuration.json') as configuration_file:
 
         configuration = configuration_file.read().replace('\\', '/')
         configuration = json.loads(configuration)

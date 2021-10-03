@@ -142,7 +142,7 @@ def modify_tvshows_json(tvshows_json_path, tmp_path):
         data_config['episodeThumbFilenames'] = ["FILENAME_THUMB"]
 
         data_config['nfoLanguage'] = 'es'
-        data_config['scraper'] = 'tmdb'
+        data_config['scraper'] = 'imdb'
         data_config['scraperLanguage'] = 'es'
         data_config['certificationCountry'] = 'ES'
         data_config['releaseDateCountry'] = 'ES'
@@ -151,7 +151,7 @@ def modify_tvshows_json(tvshows_json_path, tmp_path):
         data_config['imageScraperLanguage'] = 'es'
         data_config['subtitleScraperLanguage'] = 'es'
         data_config['preferredRating'] = 'imdb'
-        data_config['artworkScrapers'] = ["tvdb", "tmdb", "imdb", "ffmpeg", "fanarttv", "anidb" ]
+        data_config['artworkScrapers'] = ["imdb", "tmdb", "tvdb", "ffmpeg", "fanarttv", "anidb" ]
         data_config['writeCleanNfo'] = True
         data_config['seasonArtworkFallback'] = True
 
