@@ -89,7 +89,7 @@ def modify_movies_json(movies_json_path, tmp_path):
 
 def scrap_movies(**kwargs):
 
-    modify_movies_json(kwargs['script_path'], kwargs["tmp_path"])
+    modify_movies_json(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", kwargs["tmp_path"])
 
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
     if os.path.isdir(exports_folder):
@@ -156,7 +156,7 @@ def modify_tvshows_json(tvshows_json_path, tmp_path):
 
 def scrap_series(**kwargs):
 
-    modify_tvshows_json(kwargs['script_path'], kwargs["tmp_path"])
+    modify_tvshows_json(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", kwargs["tmp_path"])
 
     exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
     if  os.path.isdir(exports_folder):
