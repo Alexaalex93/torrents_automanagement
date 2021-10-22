@@ -101,12 +101,12 @@ def scrap_movies(**kwargs):
 
     cont = 1
 
-    while not os.path.isfile(f'{exports_folder}/movies.json'):
+    while not os.path.isfile(f'{exports_folder}/movielist.json'):
 
         os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -e -eT=movies_to_json -eP=\"{exports_folder}\"')
-        if cont % 10 != 0:
+        if cont % 10 == 0:
             send_message = SendMessage(kwargs['script_path'])
-            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo movies.json [{kwargs["file"]}]')
+            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo movielist.json [{kwargs["file"]}]')
 
             break
         cont += 1
@@ -175,12 +175,12 @@ def scrap_series(**kwargs):
 
     cont = 1
 
-    while not os.path.isfile(f'{exports_folder}/tvShows.json'):
+    while not os.path.isfile(f'{exports_folder}/tvshows.json'):
         os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
-        if cont % 10 != 0:
+        if cont % 10 == 0:
             send_message = SendMessage(kwargs['script_path'])
-            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo tvShows.json [{kwargs["file"]}]')
+            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo tvshows.json [{kwargs["file"]}]')
 
             break
         time.sleep(5)
