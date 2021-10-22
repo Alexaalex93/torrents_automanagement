@@ -79,7 +79,7 @@ def modify_movies_json(movies_json_path, tmp_path):
        data_config['scraperLanguage'] = 'es'
        data_config['certificationCountry'] = 'ES'
        data_config['releaseDateCountry'] = 'ES'
-       data_config['ratingSources'] = 'imdb'
+       data_config['ratingSources'] = [ 'imdb' ],
        data_config['scraperMetadataConfig'] = [ "ID", "TITLE", "ORIGINAL_TITLE", "TAGLINE", "PLOT", "YEAR", "RELEASE_DATE", "RATING", "TOP250", "RUNTIME", "CERTIFICATION", "GENRES", "SPOKEN_LANGUAGES", "COUNTRY", "PRODUCTION_COMPANY", "TAGS", "COLLECTION", "TRAILER", "ACTORS", "PRODUCERS", "DIRECTORS", "WRITERS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "EXTRAFANART", "EXTRATHUMB", "ID", "TITLE", "ORIGINAL_TITLE", "TAGLINE", "PLOT", "YEAR", "RELEASE_DATE", "RATING", "TOP250", "RUNTIME", "CERTIFICATION", "GENRES", "SPOKEN_LANGUAGES", "COUNTRY", "PRODUCTION_COMPANY", "TAGS", "COLLECTION", "TRAILER", "ACTORS", "PRODUCERS", "DIRECTORS", "WRITERS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "EXTRAFANART", "EXTRATHUMB" ]
        data_config['scraperFallback'] = True
        data_config['imageScraperLanguage'] = 'es'
@@ -128,7 +128,6 @@ def modify_tvshows_json(tvshows_json_path, tmp_path):
 
     with open(tvshows_json_path, 'w') as jsonFile:
         data_config['tvShowDataSource'].append(tmp_path)
-
         data_config['nfoFilenames'] = ["TV_SHOW"]
         data_config['posterFilenames'] = ["POSTER"]
         data_config['fanartFilenames'] = ["FANART"]
@@ -144,7 +143,6 @@ def modify_tvshows_json(tvshows_json_path, tmp_path):
         data_config['seasonThumbFilenames'] = ["SEASON_THUMB"]
         data_config['episodeNfoFilenames'] = ["FILENAME"]
         data_config['episodeThumbFilenames'] = ["FILENAME_THUMB"]
-
         data_config['nfoLanguage'] = 'es'
         data_config['scraper'] = 'imdb'
         data_config['scraperLanguage'] = 'es'
