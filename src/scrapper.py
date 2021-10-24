@@ -89,6 +89,7 @@ def modify_movies_json(movies_json_path, tmp_path):
 
 
 def scrap_movies(**kwargs):
+    send_message = SendMessage(kwargs['script_path'])
 
     modify_movies_json(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", kwargs["tmp_path"])
 
@@ -101,14 +102,18 @@ def scrap_movies(**kwargs):
 
     cont = 1
 
+    send_message.to_log_bot('INFO', f'Comprobando movielist.json [{kwargs["file"]}]')
+    send_message.to_log_bot('INFO', f'Comprobación número {cont} de movielist.json: {os.path.isfile(f"{exports_folder}/movielist.json")} [{kwargs["file"]}]')
+
     while not os.path.isfile(f'{exports_folder}/movielist.json'):
 
         os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -e -eT=movies_to_json -eP=\"{exports_folder}\"')
-        if cont % 10 == 0:
-            send_message = SendMessage(kwargs['script_path'])
-            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo movielist.json [{kwargs["file"]}]')
+        send_message.to_log_bot('INFO', f'Comprobación número {cont} de movielist.json: {os.path.isfile(f"{exports_folder}/movielist.json")} [{kwargs["file"]}]')
 
+        if cont % 10 == 0:
+            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo movielist.json [{kwargs["file"]}]')
             break
+
         cont += 1
     folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], category=kwargs['category'], file=kwargs['file'])
 
@@ -163,6 +168,7 @@ def modify_tvshows_json(tvshows_json_path, tmp_path):
         json.dump(data_config, jsonFile, indent=4)
 
 def scrap_series(**kwargs):
+    send_message = SendMessage(kwargs['script_path'])
 
     modify_tvshows_json(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", kwargs["tmp_path"])
 
@@ -173,12 +179,14 @@ def scrap_series(**kwargs):
     os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
     cont = 1
+    send_message.to_log_bot('INFO', f'Comprobando tvshows.json [{kwargs["file"]}]')
+    send_message.to_log_bot('INFO', f'Comprobación número {cont} de tvshows.json: {os.path.isfile(f"{exports_folder}/tvshows.json")} [{kwargs["file"]}]')
 
     while not os.path.isfile(f'{exports_folder}/tvshows.json'):
         os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
+        send_message.to_log_bot('INFO', f'Comprobación número {cont} de tvshows.json: {os.path.isfile(f"{exports_folder}/tvshows.json")} [{kwargs["file"]}]')
 
         if cont % 10 == 0:
-            send_message = SendMessage(kwargs['script_path'])
             send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo tvshows.json [{kwargs["file"]}]')
 
             break
