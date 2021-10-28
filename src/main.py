@@ -8,7 +8,7 @@ Created on Wed Jul 28 11:29:17 2021
 
 from convert_and_move import check_extension
 from manage_files import upload_to_drive, upload_to_backup_drive
-from scrapper import scrap_movies, scrap_series
+from scrapper import scrap
 from send_message import SendMessage
 from refactor_series import refactor_series
 
@@ -77,15 +77,17 @@ def main(args):
 
     send_message.to_log_bot('INFO', f'Inicio scrapping [{file}]')
 
+
+
     if series:
         file_name = refactor_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
-        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, file=file)
+        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, file=file, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
     else:
-        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap_movies(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, file=file)
+        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, file=file)
 
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
 
-    upload_to_drive(rclone_path=configuration['rclone_path'], script_path=configuration['script_path'], tmp_path=f'{tmp_path}/{folder_name}', remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
+    upload_to_drive(rclone_path=configuration['rclone_path'], script_path=configuration['script_path'], tmp_path=f'{tmp_path}/{folder_name}', remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
 
     if series:
         send_message.to_telegram_channel(folder_name=f'{folder_name} {season_episode}', resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)

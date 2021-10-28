@@ -4,5 +4,8 @@
         "remote_backup":"name_of_remote_of_your_backup_drive",
         "remote_folders":{"name_of_category":"path_to_subfolders_inside_of_the_remote_if_exists", "FullUHD":"FullBluray\\Peliculas\\ISOS\\UHD", "RemuxFHD":"", "RemuxUHD":"", "WedDLFHD":"", "WedDLUHD":""},
         "rclone_path":"",
-		"rclone_config_path":""
+		"rclone_config_path":"",
+		"script_path":"",
+		"global_path":"",
+		"docker_tmm_image":""
 }

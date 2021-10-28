@@ -39,7 +39,7 @@ def check_extension(**kwargs):
             send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
 
             file, extension = os.path.splitext(os.path.split(source_path)[1])
-            file_name = re.sub(r'\-', '_', re.sub(r'(?i)(hdo|\[.*\]|\_\.|\.\.\.|\+)', '', file))
+            file_name = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(.+?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+)', '', file))
             file_name = f'{file_name}{extension}'
 
             shutil.copy(source_path, f'{kwargs["tmp_path"]}/{file_name}')

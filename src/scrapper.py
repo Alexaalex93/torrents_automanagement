@@ -10,7 +10,6 @@ import json
 import glob
 import re
 import shutil
-import time
 
 from send_message import SendMessage
 
@@ -18,34 +17,40 @@ def rename_files(**kwargs):
 
     try:
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
-            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
-            data_content = json.loads(data)
-        movie_path = glob.glob(f'{kwargs["tmp_path"]}/*')[0]
-        data = data_content[movie_path]
-        folder_name = data['next_title'].replace('?', '').replace(':', '')
 
-        for file in glob.glob(f'{movie_path}/*'):
+            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
+            data = json.loads(data)
+        #movie_path = glob.glob(f'{kwargs["tmp_path"]}/*')[0]
+        #data = data_content[movie_path]
+        folder_name = f'{data["title"]} ({data["year"]})'.replace('?', '').replace(':', '')
+
+        video_codec = data['video_codec'].replace('h', 'x')
+        dual_audios_subs = ''
+        spanish_lan = False
+        english_lan = False
+        for audios in data['audio_metadata']:
+            if audios['language'] == 'eng':
+                english_lan = True
+            if audios['language'] == 'spa':
+                spanish_lan = True
+        if english_lan and spanish_lan:
+            dual_audios_subs = 'Dual + '
+        if data['subtitles']:
+            dual_audios_subs+='Subs'
+
+
+        for file in glob.glob(f'{kwargs["tmp_path"]}/*/*'):
+
             path, name = os.path.split(file)
-            video_codec = data['video_codec'].replace('h', 'x')
-            dual_audios_subs = ''
-            spanish_lan = False
-            english_lan = False
-            for audios in data['audio_metadata']:
-                if audios['language'] == 'eng':
-                    english_lan = True
-                if audios['language'] == 'spa':
-                    spanish_lan = True
-            if english_lan and spanish_lan:
-                dual_audios_subs = 'Dual + '
-            if data['subtitles']:
-                dual_audios_subs+='Subs'
+
             extension = os.path.splitext(file)[1]
-            new_name = f'{path}//{folder_name} [{data["resolution"]} {kwargs["category"]} {video_codec} {data["audio_metadata"][0]["codec"]}] [{data["video_bitrate"]}] [{dual_audios_subs}] [ID {data["tmdb_id"]}]'
+            new_name = f'{path}/{folder_name} [{data["resolution"]} {kwargs["category"]} {video_codec} {data["audio_metadata"][0]["codec"]}] [{data["video_bitrate"]}] [{dual_audios_subs}] [ID {data["tmdb_id"]}]'
             if extension == '.jpg':
                 new_name += re.search(r'-(poster|fanart|banner|clearart|thumb|landscape|logo|clearlogo|disc|discart|keyart)\.jpg', file).group(0)
             else:
                 new_name += extension
             os.rename(file, new_name)
+
         return folder_name, data['resolution'], glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*-poster.jpg')[0], data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
@@ -53,145 +58,82 @@ def rename_files(**kwargs):
         send_message = SendMessage(kwargs['script_path'])
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion rename_files(), Error: {str(exc)}')
 
-def modify_movies_json(movies_json_path, tmp_path):
 
-    with open(movies_json_path, 'r') as jsonFile:
-        data_config = json.load(jsonFile)
+def get_series_information(**kwargs):
 
-    with open(movies_json_path, 'w') as jsonFile:
-       data_config['movieDataSource'].append(tmp_path)
+    try:
+        with open(kwargs['json_path'], encoding='utf-8') as data_file:
+            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
+            data = json.loads(data)
 
-       data_config['nfoFilenames'] = [ "FILENAME_NFO" ]
-       data_config['posterFilenames'] = [ "FILENAME_POSTER" ]
-       data_config['fanartFilenames'] = [ "FILENAME_FANART" ]
-       data_config['extraFanartFilenames'] = [ "FILENAME_EXTRAFANART" ]
-       data_config['bannerFilenames'] = [ "FILENAME_BANNER" ]
-       data_config['clearartFilenames'] = [ "FILENAME_CLEARART" ]
-       data_config['thumbFilenames'] = [ "FILENAME_LANDSCAPE" ]
-       data_config['logoFilenames'] = [ "FILENAME_LOGO" ]
-       data_config['keyartFilenames'] = [ "FILENAME_KEYART" ]
-       data_config['artworkScrapers'] = [ "tmdb", "mpdbtv", "imdb", "fanarttv", "ffmpeg" ]
-       data_config['writeCleanNfo'] = True
-       data_config['nfoLanguage'] = 'es'
-       data_config['renamerPathname'] = '${title} ${- ,edition,} (${year})'
-       data_config['renamerFilename'] = ''
-       data_config['movieScraper'] = 'tmdb'
-       data_config['scraperLanguage'] = 'es'
-       data_config['certificationCountry'] = 'ES'
-       data_config['releaseDateCountry'] = 'ES'
-       data_config['ratingSources'] = ['imdb']
-       data_config['scraperMetadataConfig'] = [ "ID", "TITLE", "ORIGINAL_TITLE", "TAGLINE", "PLOT", "YEAR", "RELEASE_DATE", "RATING", "TOP250", "RUNTIME", "CERTIFICATION", "GENRES", "SPOKEN_LANGUAGES", "COUNTRY", "PRODUCTION_COMPANY", "TAGS", "COLLECTION", "TRAILER", "ACTORS", "PRODUCERS", "DIRECTORS", "WRITERS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "EXTRAFANART", "EXTRATHUMB", "ID", "TITLE", "ORIGINAL_TITLE", "TAGLINE", "PLOT", "YEAR", "RELEASE_DATE", "RATING", "TOP250", "RUNTIME", "CERTIFICATION", "GENRES", "SPOKEN_LANGUAGES", "COUNTRY", "PRODUCTION_COMPANY", "TAGS", "COLLECTION", "TRAILER", "ACTORS", "PRODUCERS", "DIRECTORS", "WRITERS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "EXTRAFANART", "EXTRATHUMB" ]
-       data_config['scraperFallback'] = True
-       data_config['imageScraperLanguage'] = 'es'
+        #data_json = data_content[glob.glob(f'{kwargs["tmp_path"]}/*')[0]]
 
+        folder_name = f'{data["title"]} ({data["year"]})'.replace('?', '').replace(':', '')
+        return folder_name, data['resolution'],  glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/poster.jpg')[0], data['plot'], data['imdb_rating'], data['imdb_id']
 
-       json.dump(data_config, jsonFile, indent=4)
+    except Exception as exc:
 
+        send_message = SendMessage(kwargs['script_path'])
+        send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion get_series_information(), Error: {str(exc)}')
 
-def scrap_movies(**kwargs):
-    send_message = SendMessage(kwargs['script_path'])
+def scrap(**kwargs):
+    exports_folder = f'/downloads/exports/{kwargs["hash_folder"]}'
 
-    modify_movies_json(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", kwargs["tmp_path"])
-
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
     if os.path.isdir(exports_folder):
         shutil.rmtree(exports_folder)
     os.mkdir(exports_folder)
 
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=\"{exports_folder}\"')
+    if kwargs['series']:
+        docker_folder = 'tvshows'
+        tmm_command = 'tvshow'
+    else:
+        docker_folder = 'movies'
+        tmm_command = 'movie'
+    export_script = f'{docker_folder}_to_json'
 
-    cont = 1
+    os.system(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{kwargs["tmp_path"]}:/{docker_folder}" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" {kwargs["docker_tmm_image"]} /tmm/tinyMediaManager/tinyMediaManager {tmm_command} -u --scrapeAll --renameAll -e -eT={export_script} -eP=/exports')
 
-    send_message.to_log_bot('INFO', f'Comprobando movielist.json [{kwargs["file"]}]')
-    send_message.to_log_bot('INFO', f'Comprobación número {cont} de movielist.json: {os.path.isfile(f"{exports_folder}/movielist.json")} [{kwargs["file"]}]')
+    if kwargs['series']:
+        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = get_series_information(json_path = f'{exports_folder}/tvshows.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], file=kwargs['file'])
+    else:
+        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], category=kwargs['category'], script_path=kwargs['script_path'], file=kwargs['file'])
 
-    while not os.path.isfile(f'{exports_folder}/movielist.json'):
+    shutil.rmtree(exports_folder)
 
-        os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager movie -e -eT=movies_to_json -eP=\"{exports_folder}\"')
-        send_message.to_log_bot('INFO', f'Comprobación número {cont} de movielist.json: {os.path.isfile(f"{exports_folder}/movielist.json")} [{kwargs["file"]}]')
+    return folder_name, resolution, poster_path, plot, imdb_rating, imdb_id
+'''
+def scrap_movies(**kwargs):
+    #Pasar global path
+    #Local docker mapping
+    exports_folder = f'/downloads/exports/{kwargs["hash_folder"]}'
 
-        if cont % 10 == 0:
-            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo movielist.json [{kwargs["file"]}]')
-            break
+    if os.path.isdir(exports_folder):
+        shutil.rmtree(exports_folder)
+    os.mkdir(exports_folder)
 
-        cont += 1
+    #Referenced by global mapping
+    os.system(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{tmp_path=kwargs["tmp_path"]}:/movies" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" f{kwargs["docker_image"]} /tmm/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=/exports')
+
     folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], category=kwargs['category'], file=kwargs['file'])
 
     shutil.rmtree(exports_folder)
 
-    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", 'r') as jsonFile:
-        data_config = json.load(jsonFile)
-
-    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/movies.json", 'w') as jsonFile:
-        data_config['movieDataSource'].remove(kwargs["tmp_path"])
-        json.dump(data_config, jsonFile, indent=4)
     return folder_name, resolution, poster_path, plot, imdb_rating, imdb_id
 
-def modify_tvshows_json(tvshows_json_path, tmp_path):
-    with open(tvshows_json_path, 'r') as jsonFile:
-            data_config = json.load(jsonFile)
-
-    with open(tvshows_json_path, 'w') as jsonFile:
-        data_config['tvShowDataSource'].append(tmp_path)
-
-        data_config['nfoFilenames'] = ["TV_SHOW"]
-        data_config['posterFilenames'] = ["POSTER"]
-        data_config['fanartFilenames'] = ["FANART"]
-        data_config['bannerFilenames'] = ["BANNER"]
-        data_config['clearartFilenames'] = ["CLEARART"]
-        data_config['thumbFilenames'] = ["THUMB"]
-        data_config['clearlogoFilenames'] = ["CLEARLOGO"]
-        data_config['logoFilenames'] = ["LOGO"]
-        data_config['characterartFilenames'] = ["CHARACTERART"]
-        data_config['keyartFilenames'] = ["KEYART"]
-        data_config['seasonPosterFilenames'] = ["SEASON_POSTER"]
-        data_config['seasonBannerFilenames'] = ["SEASON_BANNER"]
-        data_config['seasonThumbFilenames'] = ["SEASON_THUMB"]
-        data_config['episodeNfoFilenames'] = ["FILENAME"]
-        data_config['episodeThumbFilenames'] = ["FILENAME_THUMB"]
-        data_config['nfoLanguage'] = 'es'
-        data_config['scraper'] = 'imdb'
-        data_config['scraperLanguage'] = 'es'
-        data_config['certificationCountry'] = 'ES'
-        data_config['releaseDateCountry'] = 'ES'
-        data_config['tvShowScraperMetadataConfig'] = [ "ID", "TITLE", "ORIGINAL_TITLE", "PLOT", "YEAR", "AIRED", "STATUS", "RATING", "RUNTIME", "CERTIFICATION", "GENRES", "COUNTRY", "STUDIO", "TAGS", "TRAILER", "SEASON_NAMES", "ACTORS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "CHARACTERART", "EXTRAFANART", "SEASON_POSTER", "SEASON_BANNER", "SEASON_THUMB", "THEME", "ID", "TITLE", "ORIGINAL_TITLE", "PLOT", "YEAR", "AIRED", "STATUS", "RATING", "RUNTIME", "CERTIFICATION", "GENRES", "COUNTRY", "STUDIO", "TAGS", "TRAILER", "SEASON_NAMES", "ACTORS", "POSTER", "FANART", "BANNER", "CLEARART", "THUMB", "LOGO", "CLEARLOGO", "DISCART", "KEYART", "CHARACTERART", "EXTRAFANART", "SEASON_POSTER", "SEASON_BANNER", "SEASON_THUMB", "THEME" ]
-        data_config['episodeScraperMetadataConfig'] = [ "TITLE", "ORIGINAL_TITLE", "PLOT", "AIRED_SEASON_EPISODE", "DVD_SEASON_EPISODE", "DISPLAY_SEASON_EPISODE", "AIRED", "RATING", "TAGS", "ACTORS", "DIRECTORS", "WRITERS", "PRODUCERS", "THUMB", "TITLE", "ORIGINAL_TITLE", "PLOT", "AIRED_SEASON_EPISODE", "DVD_SEASON_EPISODE", "DISPLAY_SEASON_EPISODE", "AIRED", "RATING", "TAGS", "ACTORS", "DIRECTORS", "WRITERS", "PRODUCERS", "THUMB" ]
-        data_config['imageScraperLanguage'] = 'es'
-        data_config['subtitleScraperLanguage'] = 'es'
-        data_config['preferredRating'] = 'imdb'
-        data_config['artworkScrapers'] = ["imdb", "tmdb", "tvdb", "ffmpeg", "fanarttv", "anidb" ]
-        data_config['writeCleanNfo'] = True
-        data_config['seasonArtworkFallback'] = True
-
-
-
-        json.dump(data_config, jsonFile, indent=4)
 
 def scrap_series(**kwargs):
-    send_message = SendMessage(kwargs['script_path'])
 
-    modify_tvshows_json(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", kwargs["tmp_path"])
+    #Local docker mapping
+    exports_folder = f'/downloads/exports/{kwargs["hash_folder"]}'
 
-    exports_folder = f'{kwargs["script_path"]}/utilities/tinyMediaManager/{kwargs["hash_folder"]}'
     if  os.path.isdir(exports_folder):
         shutil.rmtree(exports_folder)
     os.mkdir(exports_folder)
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
 
-    cont = 1
-    send_message.to_log_bot('INFO', f'Comprobando tvshows.json [{kwargs["file"]}]')
-    send_message.to_log_bot('INFO', f'Comprobación número {cont} de tvshows.json: {os.path.isfile(f"{exports_folder}/tvshows.json")} [{kwargs["file"]}]')
+    #Referenced by global mapping
+    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=/mnt/e/exports')
+    os.system(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{tmp_path=kwargs["tmp_path"]}:/tvshows" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" f{kwargs["docker_image"]} /tmm/tinyMediaManager/tinyMediaManager  tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=/exports'))
 
-    while not os.path.isfile(f'{exports_folder}/tvshows.json'):
-        os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -e -eT=tvshows_to_json -eP=\"{exports_folder}\"')
-        send_message.to_log_bot('INFO', f'Comprobación número {cont} de tvshows.json: {os.path.isfile(f"{exports_folder}/tvshows.json")} [{kwargs["file"]}]')
-
-        if cont % 10 == 0:
-            send_message.to_log_bot('ERROR', f'No se ha podido generar el archivo tvshows.json [{kwargs["file"]}]')
-
-            break
-        time.sleep(5)
-        cont += 1
 
     with open(f'{exports_folder}/tvshows.json', encoding='utf-8') as data_file:
         data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
@@ -203,13 +145,5 @@ def scrap_series(**kwargs):
 
     shutil.rmtree(exports_folder)
 
-
-    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", 'r') as jsonFile:
-        data_config = json.load(jsonFile)
-
-    with open(f"{kwargs['script_path']}/utilities/tinyMediaManager/data/tvShows.json", 'w') as jsonFile:
-        data_config['tvShowDataSource'].remove(kwargs["tmp_path"])
-        json.dump(data_config, jsonFile, indent=4)
-
-
     return series_name, data_json['resolution'], glob.glob(f'{kwargs["tmp_path"]}/{series_name}/poster.jpg')[0], data_json['plot'], data_json['imdb_rating'], data_json['imdb_id']
+'''
