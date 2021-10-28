@@ -10,7 +10,7 @@ import shutil
 from send_message import SendMessage
 import re
 
-def check_extension(**kwargs):
+def convert_and_move(**kwargs):
     send_message = SendMessage(kwargs['script_path'])
 
     try:
@@ -34,19 +34,21 @@ def check_extension(**kwargs):
         else:
 
             if os.path.isdir(source_path): #Si es temporada completa
+
                 send_message.to_log_bot('INFO', f'Moviendo carpeta a carpeta temporal [{kwargs["file"]}]')
 
-                new_folder_name = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.split(source_path)[1])
+                file_name = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.split(source_path)[1])
+                shutil.copytree(source_path, f'{kwargs["tmp_path"]}/{file_name}')
 
-                shutil.copytree(source_path, f'{kwargs["tmp_path"]}/{new_folder_name}')
             else:
 
                 send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
 
                 path, file = os.path.split(source_path)
-                file = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso', '', file))
-
-                shutil.copy(source_path, f'{kwargs["tmp_path"]}/{file}')
+                folder_name = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.splitext(file)[0]))
+                file = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso)', '', file))
+                os.mkdir(f'{kwargs["tmp_path"]}/{folder_name}')
+                shutil.copy(source_path, f'{kwargs["tmp_path"]}/{folder_name}/{file}')
 
         send_message.to_log_bot('INFO', f'Archivo movido a carpeta temporal [{kwargs["file"]}]')
     except Exception as exc:
