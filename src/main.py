@@ -81,9 +81,9 @@ def main(args):
 
     if series:
         file_name = refactor_series(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, file=file)
-        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, file=file, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
+        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, series=True, file=file, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
     else:
-        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, file=file)
+        folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, file_name=file_name, hash_folder=hash_folder, series=False, file=file)
 
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
 
