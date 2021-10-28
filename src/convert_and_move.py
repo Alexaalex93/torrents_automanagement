@@ -16,33 +16,37 @@ def check_extension(**kwargs):
     try:
         source_path = kwargs["source_path"]
 
-        if not os.path.splitext(source_path)[1] == '.mkv' and not os.path.splitext(source_path)[1] == '.iso': #Si no es un archivo iso o mkv
-            if 'BDMV' in os.listdir(source_path): #Si tenemos la carpeta BDMV en las subcarpetas
-                name = os.path.split(source_path)[1]
-                final_name = name.replace(' ', '_').replace('(', '').replace(')','').replace('[','').replace(']','')
+        if not os.path.splitext(source_path)[1] == '.mkv' and not os.path.splitext(source_path)[1] == '.iso' and 'BDMV' in os.listdir(source_path): #Si no es un archivo iso o mkv y que haya la carmeta BDMV en las subcarpetas
+            #Implementar correctamente
+            name = os.path.split(source_path)[1]
+            final_name = name.replace(' ', '_').replace('(', '').replace(')','').replace('[','').replace(']','')
 
-                send_message.to_log_bot('INFO', 'Iniciando conversion a iso')
-                os.system(f'genisoimage -udf -allow-limited-size -input-charset "utf-8" -v -J -r -V {final_name} -o "{kwargs["tmp_path"]}/{final_name}.iso" "{kwargs["source_path"]}"')
+            send_message.to_log_bot('INFO', 'Iniciando conversion a iso')
+            os.system(f'genisoimage -udf -allow-limited-size -input-charset "utf-8" -v -J -r -V {final_name} -o "{kwargs["tmp_path"]}/{final_name}.iso" "{kwargs["source_path"]}"')
 
-                send_message.to_log_bot('INFO', 'FullBluray convertido a iso')
+            send_message.to_log_bot('INFO', 'FullBluray convertido a iso')
 
-                os.rename(re.sub('(?i)hdo', '', re.sub('\[.*\]', '',f'{kwargs["tmp_path"]}/{final_name}', f'{kwargs["tmp_path"]}/{final_name}')).replace('-', '_').replace(' ', '_').replace('+', '').replace('_.', '.').replace('...', ''))
-                file_name = final_name.replace('-', '_').replace(' ', '_').replace('+', '').replace('.', '')
-                file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.').replace('...', '')
-            else: #Si no tenemos la carpeta BDMV en las subcarpetas, pueden ser series
-                send_message.to_log_bot('INFO', f'Moviendo carpeta a carpeta temporal [{kwargs["file"]}]')
+            os.rename(re.sub('(?i)hdo', '', re.sub('\[.*\]', '',f'{kwargs["tmp_path"]}/{final_name}', f'{kwargs["tmp_path"]}/{final_name}')).replace('-', '_').replace(' ', '_').replace('+', '').replace('_.', '.').replace('...', ''))
+            file_name = final_name.replace('-', '_').replace(' ', '_').replace('+', '').replace('.', '')
+            file_name = re.sub('(?i)hdo', '', re.sub('\[.*\]', '', file_name)).replace('_.', '.').replace('...', '')
 
-                shutil.copytree(source_path, f'{kwargs["tmp_path"]}/{os.path.split(source_path)[1]}')
-                file_name = os.path.split(source_path)[1]
 
         else:
-            send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
 
-            file, extension = os.path.splitext(os.path.split(source_path)[1])
-            file_name = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(.+?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+)', '', file))
-            file_name = f'{file_name}{extension}'
+            if os.path.isdir(source_path): #Si es temporada completa
+                send_message.to_log_bot('INFO', f'Moviendo carpeta a carpeta temporal [{kwargs["file"]}]')
 
-            shutil.copy(source_path, f'{kwargs["tmp_path"]}/{file_name}')
+                new_folder_name = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.split(source_path)[1])
+
+                shutil.copytree(source_path, f'{kwargs["tmp_path"]}/{new_folder_name}')
+            else:
+
+                send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
+
+                path, file = os.path.split(source_path)
+                file = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso', '', file))
+
+                shutil.copy(source_path, f'{kwargs["tmp_path"]}/{file}')
 
         send_message.to_log_bot('INFO', f'Archivo movido a carpeta temporal [{kwargs["file"]}]')
     except Exception as exc:
