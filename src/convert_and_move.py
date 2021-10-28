@@ -39,6 +39,7 @@ def convert_and_move(**kwargs):
 
                 file_name = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.split(source_path)[1])
                 shutil.copytree(source_path, f'{kwargs["tmp_path"]}/{file_name}')
+                send_message.to_log_bot('INFO', f'Carpeta movida a carpeta temporal [{kwargs["file"]}]')
 
             else:
 
@@ -50,9 +51,9 @@ def convert_and_move(**kwargs):
                 os.mkdir(f'{kwargs["tmp_path"]}/{folder_name}')
                 shutil.copy(source_path, f'{kwargs["tmp_path"]}/{folder_name}/{file}')
 
-        send_message.to_log_bot('INFO', f'Archivo movido a carpeta temporal [{kwargs["file"]}]')
+                send_message.to_log_bot('INFO', f'Archivo movido a carpeta temporal [{kwargs["file"]}]')
+
     except Exception as exc:
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion check_extension(), Error: {str(exc)}')
-    return file_name
 
 #python3 /scripts/torrents_automanagement/src/main.py -p "/downloads/series_fhd_webdl/Atracadores (2021) S01 [PACK][NF WEB-DL 1080p AVC ES-EN DD+ 5.1 Subs][HDO]"  -c "series_fhd_webdl"
