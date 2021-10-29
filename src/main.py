@@ -18,7 +18,7 @@ import os
 import threading
 import re
 import hashlib
-
+import glob
 
 def get_season_episode_number(file):
     season_episode = re.search(r'\s(?i)s\d{1,2}(e\d{1,2})?\s', file)[0].strip()
@@ -80,11 +80,14 @@ def main(args):
 
     send_message.to_log_bot('INFO', f'Inicio scrapping [{file}]')
 
-    folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, hash_folder=hash_folder, series=series, file=file, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
+    resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], category=configuration['naming_conventions'][args.category], tmp_path=tmp_path, hash_folder=hash_folder, series=series, file=file, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
 
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
 
-    upload_to_drive(rclone_path=configuration['rclone_path'], script_path=configuration['script_path'], tmp_path=f'{tmp_path}/{folder_name}', remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
+    tmp_path = glob.glob(f'{tmp_path}/*')[0]
+    folder_name = os.path.split(tmp_path)[1]
+
+    upload_to_drive(rclone_path=configuration['rclone_path'], script_path=configuration['script_path'], tmp_path=tmp_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
 
     send_message.to_telegram_channel(folder_name=f'{folder_name} {season_episode}', resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
 
