@@ -51,7 +51,7 @@ def rename_files(**kwargs):
                 new_name += extension
             os.rename(file, new_name)
 
-        return folder_name, data['resolution'], glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*-poster.jpg')[0], data['plot'], data['imdb_rating'], data['imdb_id']
+        return folder_name, data['resolution'], glob.glob(f'{kwargs["tmp_path"]}/*/*poster*')[0], data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
 
@@ -69,7 +69,7 @@ def get_series_information(**kwargs):
         #data_json = data_content[glob.glob(f'{kwargs["tmp_path"]}/*')[0]]
 
         folder_name = f'{data["title"]} ({data["year"]})'.replace('?', '').replace(':', '')
-        return folder_name, data['resolution'],  glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/poster.jpg')[0], data['plot'], data['imdb_rating'], data['imdb_id']
+        return folder_name, data['resolution'],  glob.glob(f'{kwargs["tmp_path"]}/*/*poster*')[0], data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
 
@@ -101,49 +101,3 @@ def scrap(**kwargs):
     shutil.rmtree(exports_folder)
 
     return folder_name, resolution, poster_path, plot, imdb_rating, imdb_id
-'''
-def scrap_movies(**kwargs):
-    #Pasar global path
-    #Local docker mapping
-    exports_folder = f'/downloads/exports/{kwargs["hash_folder"]}'
-
-    if os.path.isdir(exports_folder):
-        shutil.rmtree(exports_folder)
-    os.mkdir(exports_folder)
-
-    #Referenced by global mapping
-    os.system(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{tmp_path=kwargs["tmp_path"]}:/movies" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" f{kwargs["docker_image"]} /tmm/tinyMediaManager/tinyMediaManager movie -u --scrapeAll --renameAll -e -eT=movies_to_json -eP=/exports')
-
-    folder_name, resolution, poster_path, plot, imdb_rating, imdb_id = rename_files(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], category=kwargs['category'], file=kwargs['file'])
-
-    shutil.rmtree(exports_folder)
-
-    return folder_name, resolution, poster_path, plot, imdb_rating, imdb_id
-
-
-def scrap_series(**kwargs):
-
-    #Local docker mapping
-    exports_folder = f'/downloads/exports/{kwargs["hash_folder"]}'
-
-    if  os.path.isdir(exports_folder):
-        shutil.rmtree(exports_folder)
-    os.mkdir(exports_folder)
-
-    #Referenced by global mapping
-    os.system(f'{kwargs["script_path"]}/utilities/tinyMediaManager/tinyMediaManager tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=/mnt/e/exports')
-    os.system(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{tmp_path=kwargs["tmp_path"]}:/tvshows" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" f{kwargs["docker_image"]} /tmm/tinyMediaManager/tinyMediaManager  tvshow -u --scrapeAll --renameAll -e -eT=tvshows_to_json -eP=/exports'))
-
-
-    with open(f'{exports_folder}/tvshows.json', encoding='utf-8') as data_file:
-        data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
-        data_content = json.loads(data)
-
-    data_json = data_content[glob.glob(f'{kwargs["tmp_path"]}/*')[0]]
-
-    series_name = data_json['next_title'].replace('?', '').replace(':', '')
-
-    shutil.rmtree(exports_folder)
-
-    return series_name, data_json['resolution'], glob.glob(f'{kwargs["tmp_path"]}/{series_name}/poster.jpg')[0], data_json['plot'], data_json['imdb_rating'], data_json['imdb_id']
-'''
