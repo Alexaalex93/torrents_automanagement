@@ -84,15 +84,9 @@ def main(args):
 
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{file}]')
 
+
     current_path = glob.glob(f'{tmp_path}/*')[0]
-    send_message.to_log_bot('current_path', current_path)
-
-    send_message.to_log_bot('blob', str(glob.glob(f'{tmp_path}/*')))
-
-    print('current_path', current_path)
-    folder_name = os.path.split(tmp_path)[1]
-    send_message.to_log_bot('folder_name', folder_name)
-    send_message.to_log_bot('split',  str(os.path.split(tmp_path)))
+    folder_name = os.path.split(current_path)[-1]
 
     upload_to_drive(rclone_path=configuration['rclone_path'], script_path=configuration['script_path'], tmp_path=current_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=folder_name, file=file)
 
