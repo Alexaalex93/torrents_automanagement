@@ -46,8 +46,8 @@ def convert_and_move(**kwargs):
                 send_message.to_log_bot('INFO', f'Moviendo archivo a carpeta temporal [{kwargs["file"]}]')
 
                 path, file = os.path.split(source_path)
-                folder_name = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.splitext(file)[0]))
-                file = re.sub(r'\-', '_', re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso)', '', file))
+                folder_name = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+)]|hdo|\-|\_|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.splitext(file)[0])
+                file = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+)]|hdo|\-|\_|\_\.|\.\.\.|\+|iso)', '', file)
                 os.mkdir(f'{kwargs["tmp_path"]}/{folder_name}')
                 shutil.copy(source_path, f'{kwargs["tmp_path"]}/{folder_name}/{file}')
 
