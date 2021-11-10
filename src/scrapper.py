@@ -72,7 +72,11 @@ def get_series_information(**kwargs):
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["file"]}] en funcion get_series_information(), Error: {str(exc)}')
 
 def scrap(**kwargs):
+
     exports_folder = f'/downloads/exports/{kwargs["hash_folder"]}'
+
+    if not os.path.isdir('/downloads/exports/'):
+        os.mkdir('/downloads/exports/')
 
     if os.path.isdir(exports_folder):
         shutil.rmtree(exports_folder)
