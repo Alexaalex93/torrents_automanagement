@@ -37,7 +37,7 @@ def convert_and_move(**kwargs):
 
                 send_message.to_log_bot('INFO', f'Moviendo carpeta a carpeta temporal [{kwargs["file"]}]')
 
-                file_name = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+?)]|hdo|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.split(source_path)[1])
+                file_name = re.sub(r'(?i)((?!(\(\d+\)))\(miniserie(.+?)?\)|\[(.+)]|hdo|\-|\_|\_\.|\.\.\.|\+|iso|s\d+(e\d+)?)', '', os.path.split(source_path)[1])
                 shutil.copytree(source_path, f'{kwargs["tmp_path"]}/{file_name}')
                 send_message.to_log_bot('INFO', f'Carpeta movida a carpeta temporal [{kwargs["file"]}]')
 
