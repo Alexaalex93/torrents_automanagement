@@ -21,6 +21,7 @@ import hashlib
 import glob
 
 def get_season_episode_number(file):
+    print(file)
     season_episode = re.search(r'\s(?i)s\d{1,2}(e\d{1,2})?\s', file)[0].strip()
     if 'e' in season_episode.lower():
         season = re.search(r'(?i)s\d{1,2}', season_episode)[0].lower().replace('s', '\n\nTemporada ')
