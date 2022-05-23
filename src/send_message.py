@@ -42,7 +42,8 @@ class SendMessage():
             markup = telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton(text='IMDB link', url=f'https://www.imdb.com/title/{kwargs["imdb_id"]}')]])
 
             caption_text = f"*{kwargs['folder_name']}*\n\n*Resolución:* {kwargs['resolution']}\n\n*IMDB Rating:* {kwargs['imdb_rating']}\n\n*Plot:* {kwargs['plot']}\n\n"
-            self.bot_channel.send_photo(chat_id=self.chat_id_channel,  photo=open(kwargs['poster_path'], 'rb'), caption=caption_text, parse_mode=telegram.ParseMode.MARKDOWN, timeout=5, reply_markup=markup)
+
+            self.bot_channel.send_photo(chat_id=self.chat_id_channel,  photo=open(kwargs['poster_path'], 'rb') if kwargs['poster_path'] else kwargs['poster_path'], caption=caption_text, parse_mode=telegram.ParseMode.MARKDOWN, timeout=5, reply_markup=markup)
 
         except Exception as exc:
             self.to_log_bot('ERROR', f'Class: SendMessage, Function: to_telegram_channel(), Error:{str(exc)}')
