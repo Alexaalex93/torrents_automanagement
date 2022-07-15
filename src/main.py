@@ -60,7 +60,6 @@ def main(args):
     rename_and_move_output = rename_and_move(tracker=args.tracker, source_path=args.source_path, script_path=configuration['script_path'], tmp_path=tmp_path, original_file_name=original_file_name, category= args.category)
 
     send_message.to_log_bot('INFO', f'Inicio scrapping [{original_file_name}]')
-    print(f'{tmp_path}/{rename_and_move_output["folder_name"]}')
 
     resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], category=args.category, source_tag=configuration['naming_conventions'][args.category], tmp_path=tmp_path, hash_folder=hash_folder, original_file_name=original_file_name, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
 

@@ -10,6 +10,7 @@ import json
 import glob
 import re
 import shutil
+import sys
 
 from send_message import SendMessage
 
@@ -18,10 +19,11 @@ def rename_movies(**kwargs):
     try:
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
 
-            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
+            data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace('/', ' ').replace(',}', '}').replace(',]', ']')
             data = json.loads(data)
 
-        folder_name = f'{data["title"]} ({data["year"]})'.replace('?', '').replace(':', '')
+
+        folder_name = f'{data["title"]} ({data["year"]})'.replace('?', '').replace(':', '').title()
 
         video_codec = data['video_codec'].replace('h', 'x')
         dual_audios_subs = ''
@@ -55,10 +57,14 @@ def rename_movies(**kwargs):
         return data['resolution'], poster_path, data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
+        print('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion rename_movies(), Error: {str(exc)}')
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
         send_message = SendMessage(kwargs['script_path'])
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion rename_movies(), Error: {str(exc)}')
-
+        send_message.to_log_bot('ERROR', f'{exc_type}, {fname}, {exc_tb.tb_lineno}')
 
 def get_series_information(**kwargs):
 
@@ -66,15 +72,29 @@ def get_series_information(**kwargs):
         with open(kwargs['json_path'], encoding='utf-8') as data_file:
             data = data_file.read().replace('\\\\', '/').replace('\/', '/').replace('//', '/').replace(',}', '}').replace(',]', ']')
             data = json.loads(data)
+        new_folder_name = f'{data["title"].title()} ({data["year"]})'
+        current_path = glob.glob(f'{kwargs["tmp_path"]}/*')[0]
+        current_folder_name = os.path.split(current_path)[1]
+        next_path = current_path.replace(current_folder_name, new_folder_name)
+        os.rename(current_path, next_path)
+
+        episodes_path = glob.glob(f'{next_path}/*/*')
+        for ep_path in episodes_path:
+            episode_name = os.path.splitext(os.path.split(ep_path)[1])[0]
+            os.rename(ep_path, ep_path.replace(episode_name, episode_name.title()))
 
         poster_path = glob.glob(f'{kwargs["tmp_path"]}/*/*poster*')[0] if glob.glob(f'{kwargs["tmp_path"]}/*/*poster*') else None
 
         return data['resolution'], poster_path, data['plot'], data['imdb_rating'], data['imdb_id']
 
     except Exception as exc:
-
+        print('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion get_series_information(), Error: {str(exc)}')
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
         send_message = SendMessage(kwargs['script_path'])
         send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion get_series_information(), Error: {str(exc)}')
+        send_message.to_log_bot('ERROR', f'{exc_type}, {fname}, {exc_tb.tb_lineno}')
 
 def scrap(**kwargs):
 
@@ -95,7 +115,6 @@ def scrap(**kwargs):
         tmm_command = 'movie'
     export_script = f'{docker_folder}_to_json'
 
-    print(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{kwargs["tmp_path"]}:/{docker_folder}" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" {kwargs["docker_tmm_image"]} /tmm/tinyMediaManager/tinyMediaManager {tmm_command} -u --scrapeAll --renameAll -e -eT={export_script} -eP=/exports')
     os.system(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{kwargs["tmp_path"]}:/{docker_folder}" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" {kwargs["docker_tmm_image"]} /tmm/tinyMediaManager/tinyMediaManager {tmm_command} -u --scrapeAll --renameAll -e -eT={export_script} -eP=/exports')
 
     if 'series' in kwargs['category']:

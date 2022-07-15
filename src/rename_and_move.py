@@ -16,6 +16,7 @@ import os
 import shutil
 from send_message import SendMessage
 import re
+import sys
 
 def get_name_from_parenthesis_and_bracket_format(original_file_name):
 
@@ -98,11 +99,11 @@ def rename_and_move(**kwargs):
 
             #Cojo todos los mkv esten o no en subcarpetas y le quito toda la morralla que haya despues de la temporada y episodio
             if os.path.isdir(kwargs["source_path"]):
-                shutil.copytree(kwargs["source_path"], f'{kwargs["tmp_path"]}/{folder_name}')
+
+                shutil.copytree(kwargs["source_path"] + '/', f'{kwargs["tmp_path"]}/{folder_name}/', dirs_exist_ok=True)
 
                 for mkv in  glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*.mkv'):
-                        os.rename(mkv, re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv'))
-
+                    os.rename(mkv, re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv', mkv))
             else:
 
                 file_name = os.path.split(kwargs["source_path"])[1]
@@ -131,4 +132,10 @@ def rename_and_move(**kwargs):
                 return {'folder_name':folder_name, 'movie_name':movie_name}
 
     except Exception as exc:
-        send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion check_extension(), Error: {str(exc)}')
+        print('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion rename_and_move(), Error: {str(exc)}')
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+        send_message.to_log_bot('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion rename_and_move(), Error: {str(exc)}')
+        send_message.to_log_bot('ERROR', f'{exc_type}, {fname}, {exc_tb.tb_lineno}')

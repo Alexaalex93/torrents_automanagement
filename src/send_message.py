@@ -8,6 +8,7 @@ import json
 import telegram
 import time
 from datetime import date
+import sys
 
 class SendMessage():
 
@@ -33,9 +34,13 @@ class SendMessage():
            formatted_message = f'{today} {current_time} - {level} - {message}'
            self.bot_logs.send_message(chat_id=self.chat_id_logs, text=formatted_message, timeout=5)
         except Exception as exc:
-           self.to_log_bot('ERROR', f'Class: SendMessage, Function: to_log_bot(), Error:{str(exc)}')
-           print(str(exc))
 
+            print('ERROR', f'Class: SendMessage, Function: to_log_bot(), Error:{str(exc)}')
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            self.to_log_bot('ERROR', f'Class: SendMessage, Function: to_log_bot(), Error:{str(exc)}')
+            self.to_log_bot('ERROR', f'{exc_type}, {fname}, {exc_tb.tb_lineno}')
     def to_telegram_channel(self, **kwargs):
 
         try:
@@ -46,4 +51,8 @@ class SendMessage():
             self.bot_channel.send_photo(chat_id=self.chat_id_channel,  photo=open(kwargs['poster_path'], 'rb') if kwargs['poster_path'] else kwargs['poster_path'], caption=caption_text, parse_mode=telegram.ParseMode.MARKDOWN, timeout=5, reply_markup=markup)
 
         except Exception as exc:
+            print('ERROR', f'Class: SendMessage, Function: to_telegram_channel(), Error:{str(exc)}')
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             self.to_log_bot('ERROR', f'Class: SendMessage, Function: to_telegram_channel(), Error:{str(exc)}')
