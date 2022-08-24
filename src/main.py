@@ -61,14 +61,14 @@ def main(args):
 
     send_message.to_log_bot('INFO', f'Inicio scrapping [{original_file_name}]')
 
-    resolution, poster_path, plot, imdb_rating, imdb_id = scrap(script_path=configuration['script_path'], category=args.category, source_tag=configuration['naming_conventions'][args.category], tmp_path=tmp_path, hash_folder=hash_folder, original_file_name=original_file_name, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
+    resolution, poster_path, plot, imdb_rating, imdb_id, new_folder_name = scrap(script_path=configuration['script_path'], category=args.category, source_tag=configuration['naming_conventions'][args.category], tmp_path=tmp_path, hash_folder=hash_folder, original_file_name=original_file_name, global_path=configuration['global_path'], docker_tmm_image=configuration['docker_tmm_image'])
 
     send_message.to_log_bot('INFO', f'Archivo scrapeado [{original_file_name}]')
 
     current_path = glob.glob(f'{tmp_path}/*')[0]
     folder_name = os.path.split(current_path)[-1]
 
-    upload_to_drive(rclone_path=configuration['rclone_path'], script_path=configuration['script_path'], tmp_path=current_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=rename_and_move_output["folder_name"], original_file_name=original_file_name)
+    upload_to_drive(rclone_path=configuration['rclone_path'], script_path=configuration['script_path'], tmp_path=current_path, remote_name=configuration['equivalences_tags_remote'][args.category], remote_folder=configuration['remote_folders'][args.category], folder_name=new_folder_name, original_file_name=original_file_name)
     folder_name = re.sub('\s?\{tmdb-\d+\}', '', folder_name)
 
     if 'series' in args.category:

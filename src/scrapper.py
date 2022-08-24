@@ -23,7 +23,7 @@ def rename_movies(**kwargs):
             data = json.loads(data)
 
 
-        folder_name = f'{data["title"]} ({data["year"]})'.replace('?', '').replace(':', '').title()
+        movie_name = f'{data["title"]} ({data["year"]})'.replace('?', '').replace(':', '').title()
 
         video_codec = data['video_codec'].replace('h', 'x')
         dual_audios_subs = ''
@@ -44,17 +44,27 @@ def rename_movies(**kwargs):
             path, name = os.path.split(file)
 
             extension = os.path.splitext(file)[1]
-            new_name = f'{path}/{folder_name} [{data["resolution"]} {kwargs["source_tag"]} {video_codec} {data["audio_metadata"][0]["codec"].replace("/", "-")}] [{data["video_bitrate"]}] [{dual_audios_subs}] {{tmdb-{data["tmdb_id"]}}}'
+            new_name = f'{path}/{movie_name} [{data["resolution"]} {kwargs["source_tag"]} {video_codec} {data["audio_metadata"][0]["codec"].replace("/", "-")}] [{data["video_bitrate"]}] [{dual_audios_subs}] {{tmdb-{data["tmdb_id"]}}}'
             if extension == '.jpg':
                 new_name += re.search(r'-(poster|fanart|banner|clearart|thumb|landscape|logo|clearlogo|disc|discart|keyart)\.jpg', file).group(0)
             else:
                 new_name += extension
             os.rename(file, new_name)
-        os.rename(path, f'{path} {{tmdb-{data["tmdb_id"]}}}')
+
+        new_folder_name = f'{movie_name} {{tmdb-{data["tmdb_id"]}}}'
+        print(new_folder_name)
+        current_path = glob.glob(f'{kwargs["tmp_path"]}/*')[0]
+        print(current_path)
+        current_folder_name = os.path.split(current_path)[1]
+        print(current_folder_name)
+        next_path = current_path.replace(current_folder_name, new_folder_name)
+        print(next_path)
+        os.rename(current_path, next_path)
+        ##os.rename(path, f'{path} {{tmdb-{data["tmdb_id"]}}}')
 
         poster_path = glob.glob(f'{kwargs["tmp_path"]}/*/*poster*')[0] if glob.glob(f'{kwargs["tmp_path"]}/*/*poster*') else None
 
-        return data['resolution'], poster_path, data['plot'], data['imdb_rating'], data['imdb_id']
+        return data['resolution'], poster_path, data['plot'], data['imdb_rating'], data['imdb_id'], new_folder_name
 
     except Exception as exc:
         print('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion rename_movies(), Error: {str(exc)}')
@@ -85,7 +95,7 @@ def get_series_information(**kwargs):
 
         poster_path = glob.glob(f'{kwargs["tmp_path"]}/*/*poster*')[0] if glob.glob(f'{kwargs["tmp_path"]}/*/*poster*') else None
 
-        return data['resolution'], poster_path, data['plot'], data['imdb_rating'], data['imdb_id']
+        return data['resolution'], poster_path, data['plot'], data['imdb_rating'], data['imdb_id'], new_folder_name
 
     except Exception as exc:
         print('ERROR', f'Error con archivo [{kwargs["original_file_name"]}] en funcion get_series_information(), Error: {str(exc)}')
@@ -115,13 +125,14 @@ def scrap(**kwargs):
         tmm_command = 'movie'
     export_script = f'{docker_folder}_to_json'
 
+    print(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{kwargs["tmp_path"]}:/{docker_folder}" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" {kwargs["docker_tmm_image"]} /tmm/tinyMediaManager/tinyMediaManager {tmm_command} -u --scrapeAll --renameAll -e -eT={export_script} -eP=/exports')
     os.system(f'docker run --rm -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 --name="{kwargs["hash_folder"]}" -v "{kwargs["global_path"]}/{kwargs["tmp_path"]}:/{docker_folder}" -v "{kwargs["global_path"]}/downloads/exports/{kwargs["hash_folder"]}:/exports" {kwargs["docker_tmm_image"]} /tmm/tinyMediaManager/tinyMediaManager {tmm_command} -u --scrapeAll --renameAll -e -eT={export_script} -eP=/exports')
 
     if 'series' in kwargs['category']:
-        resolution, poster_path, plot, imdb_rating, imdb_id = get_series_information(json_path = f'{exports_folder}/tvshows.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], original_file_name=kwargs['original_file_name'])
+        resolution, poster_path, plot, imdb_rating, imdb_id, new_folder_name = get_series_information(json_path = f'{exports_folder}/tvshows.json', tmp_path=kwargs['tmp_path'], script_path=kwargs['script_path'], original_file_name=kwargs['original_file_name'])
     else:
-        resolution, poster_path, plot, imdb_rating, imdb_id = rename_movies(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], source_tag=kwargs['source_tag'], script_path=kwargs['script_path'], original_file_name=kwargs['original_file_name'])
+        resolution, poster_path, plot, imdb_rating, imdb_id, new_folder_name = rename_movies(json_path = f'{exports_folder}/movielist.json', tmp_path=kwargs['tmp_path'], source_tag=kwargs['source_tag'], script_path=kwargs['script_path'], original_file_name=kwargs['original_file_name'])
 
     shutil.rmtree(exports_folder)
 
-    return resolution, poster_path, plot, imdb_rating, imdb_id
+    return resolution, poster_path, plot, imdb_rating, imdb_id, new_folder_name
