@@ -13,6 +13,7 @@ Created on Thu Jul 29 13:01:27 2021
 """
 import glob
 import os
+import stat
 import shutil
 from send_message import SendMessage
 import re
@@ -100,8 +101,9 @@ def rename_and_move(**kwargs):
             #Cojo todos los mkv esten o no en subcarpetas y le quito toda la morralla que haya despues de la temporada y episodio
             if os.path.isdir(kwargs["source_path"]):
 
-                print(kwargs["source_path"] , f'{kwargs["tmp_path"]}/{folder_name}')
-                shutil.copytree(kwargs["source_path"] , f'{kwargs["tmp_path"]}/{folder_name}', dirs_exist_ok=True)
+                shutil.copytree(kwargs['source_path'] , f'{kwargs["tmp_path"]}/{folder_name}', dirs_exist_ok=True)
+                st = os.stat(kwargs['source_path'])
+                os.chown(f'{kwargs["tmp_path"]}/{folder_name}', kwargs['source_path'], st.st_uid, st.st_gid )
                 """
                 files = glob.glob(kwargs["source_path"]+ '/**/**', recursive=True)
                 for file in files:
