@@ -84,7 +84,7 @@ def main(args):
     send_message.to_telegram_channel(folder_name=folder_name, resolution=resolution, poster_path=poster_path, plot=plot, imdb_rating=imdb_rating, imdb_id=imdb_id)
 
     send_message.to_log_bot('INFO', f'Inicio housekeeping [{original_file_name}]')
-    #shutil.rmtree(tmp_path)
+    shutil.rmtree(tmp_path)
     send_message.to_log_bot('INFO', f'Housekeeping, archivo borrado de carpeta temporal [{original_file_name}]')
 
 

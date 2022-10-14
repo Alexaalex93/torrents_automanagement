@@ -101,14 +101,12 @@ def rename_and_move(**kwargs):
             #Cojo todos los mkv esten o no en subcarpetas y le quito toda la morralla que haya despues de la temporada y episodio
             if os.path.isdir(kwargs["source_path"]):
 
-                shutil.copytree(kwargs['source_path'] , f'{kwargs["tmp_path"]}/{folder_name}', dirs_exist_ok=True)
-                st = os.stat(kwargs['source_path'])
-                os.chown(f'{kwargs["tmp_path"]}/{folder_name}', kwargs['source_path'], st.st_uid, st.st_gid )
-                """
-                files = glob.glob(kwargs["source_path"]+ '/**/**', recursive=True)
-                for file in files:
-                    shutil.copy(file, f'{kwargs["tmp_path"]}/{folder_name}')
-                """
+
+                for file in glob.glob(f"{ kwargs['source_path'].replace('[', '*[').replace(']', ']*').replace('*[', '[[]').replace(']*', '[]]')}/*.mkv"):
+                    file_name = os.path.split(file)[1]
+                    file_name = re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv' , file_name)
+                    shutil.copy(file, f'{kwargs["tmp_path"]}/{folder_name}/{file_name}')
+
                 for mkv in  glob.glob(f'{kwargs["tmp_path"]}/{folder_name}/*.mkv'):
                     os.rename(mkv, re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv', mkv))
             else:
