@@ -60,7 +60,7 @@ This file contains the configuration for the Telegram bot. Here's an example:
 
 ```json
 {
-    "chat_id_logs":"xxxxxxxxxxxxx,
+    "chat_id_logs":"xxxxxxxxxxxxx",
     "chat_id_channel":"xxxxxxxxxxxxx",
     "bot_token_channel":"xxxxxxxx:XXXXXXXXXXXXXXXXXXXXXXXXXX",
     "bot_token_logs":"xxxxxxxxxxxx1:XXXXXXXXXXXXXXXXXXXXXXXXX"
