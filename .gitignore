@@ -1,8 +1,5 @@
 # .gitignore
 
-# Ignorar los archivos de configuración
-/configuration/*
-
 # Ignorar los archivos pycache
 **/__pycache__
 
