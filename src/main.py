@@ -136,7 +136,7 @@ def process_downloaded_file(args, configuration, hash_folder_path, posters_folde
     try:
         logger.info('Starting scraping')
 
-        poster_path = scrap(posters_folder_path=posters_folder_path, hash_folder=hash_folder, category=args.category, hash_folder_path=hash_folder_path, tmm_configuration_path=configuration['tmm_configuration_path'], logger=logger)
+        poster_path = scrap(posters_folder_path=posters_folder_path, hash_folder=hash_folder, category=args.category, hash_folder_path=hash_folder_path, downloads_mount_point=configuration['downloads_mount_point'], tmm_configuration_path=configuration['tmm_configuration_path'], logger=logger)
 
         logger.debug(f'Result after scrap poster_path: {poster_path}')
         logger.info('File scraped')
@@ -223,11 +223,11 @@ def main(args):
 
         logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
 
-        #upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
+        upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
-        #send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
+        send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
 
-        #perform_housekeeping(folder_to_upload_path=folder_to_upload_path, logger=logger)
+        perform_housekeeping(folder_to_upload_path=folder_to_upload_path, logger=logger)
 
     except Exception as e:
 

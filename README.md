@@ -52,7 +52,29 @@ Replace the bracketed sections with your specific information.
 
 ## Configuration
 
+## Docker Torrent Client Configuration
+
+In order to successfully use the `tinyMediaManager` Docker container in your setup, you must specify the correct download mount point for your torrent client Docker container in the `app_configuration.json` file.
+
+This mount point is the location in the host system where the torrent client's downloaded files are stored. It's typically set when the torrent client container is created, and it allows other containers and applications to access the downloaded files.
+
 Two configuration files are required to run this application: `bot_configuration.json` and `app_configuration.json`.
+
+### app_configuration.json
+
+This file contains the application configuration. Here's an example:
+
+```json
+
+{
+    "rclone_path":"/path/to/rclone",
+    "rclone_config_path":"",
+    "tmm_configuration_path":"/path/to/data",
+	"downloads_mount_point": "/path/to/your/download/folder"
+}
+```
+
+Replace the values with your actual configuration.
 
 ### bot_configuration.json
 
@@ -67,21 +89,6 @@ This file contains the configuration for the Telegram bot. Here's an example:
 }
 ```
 Replace the values with your actual Telegram bot configuration.
-
-
-
-### app_configuration.json
-
-This file contains the application configuration. Here's an example:
-
-```json
-
-{
-    "rclone_path":"/path/to/rclone",
-    "rclone_config_path":"",
-    "tmm_configuration_path":"/path/to/data"
-}
-```
 
 Remember to rename the sample configuration files to `bot_configuration.json` and `app_configuration.json` and place them in the config/ directory.
 
