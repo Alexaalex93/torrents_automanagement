@@ -204,6 +204,7 @@ def main(args):
     setup_logging(bot_configuration_path, templates_path, main_directory, unique_id)
 
     logger = logging.getLogger()
+    logger.debug(f'Argumentos de entrada: {args}')
 
     send_message = SendMessage(bot_configuration_path, templates_path)
 
