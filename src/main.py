@@ -223,11 +223,11 @@ def main(args):
 
         logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
 
-        upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
+        #upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
-        send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
+        #send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
 
-        perform_housekeeping(folder_to_upload_path=folder_to_upload_path, logger=logger)
+        #perform_housekeeping(folder_to_upload_path=folder_to_upload_path, logger=logger)
 
     except Exception as e:
 
