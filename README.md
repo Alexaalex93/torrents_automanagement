@@ -70,7 +70,7 @@ This file contains the application configuration. Here's an example:
     "rclone_path":"/path/to/rclone",
     "rclone_config_path":"",
     "tmm_configuration_path":"/path/to/data",
-	"downloads_mount_point": "/path/to/your/download/folder"
+    "downloads_mount_point": "/path/to/your/download/folder"
 }
 ```
 
