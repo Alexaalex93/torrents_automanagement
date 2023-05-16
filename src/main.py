@@ -30,7 +30,7 @@ def log_function_call(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger = logging.getLogger()
-        if logger.level == logging.INFO:
+        if logger.level == logging.DEBUG:
             kwargs_str = ', '.join(f'{k}={v!r}' for k, v in kwargs.items())
             logger.debug(f"Input variables to {func.__name__}() ---> {func.__name__}({kwargs_str})")
         result = func(*args, **kwargs)
