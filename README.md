@@ -14,13 +14,13 @@ This script automatically manages downloaded movies and series. It renames and m
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your_username/your_repository.git
+    git clone https://github.com/Alexaalex93/torrents_automanagement.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd your_repository
+    cd torrents_automanagement
     ```
 
 3. Create a virtual environment:
