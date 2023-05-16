@@ -76,7 +76,7 @@ def load_configuration(main_directory):
 
 # Prepare a temporary folder for processing
 @log_function_call
-def prepare_temporary_folder(source_path, category, original_file_name, logger):
+def prepare_temporary_folder(source_path, category, unique_id, logger):
 
     source_path = os.path.normpath(source_path)
     category = category.lower()
@@ -102,7 +102,7 @@ def prepare_temporary_folder(source_path, category, original_file_name, logger):
     if not os.path.isdir(posters_folder_path):
         os.mkdir(posters_folder_path)
 
-    hash_folder_path, hash_folder = create_hash_folder(scrap_folder, original_file_name)
+    hash_folder_path, hash_folder = create_hash_folder(scrap_folder, unique_id)
 
     if os.path.isdir(hash_folder_path):
         shutil.rmtree(hash_folder_path)
@@ -211,7 +211,7 @@ def main(args):
 
         logger.debug('Starting the process')
 
-        hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=args.source_path, category=args.category, original_file_name=original_file_name, logger=logger)
+        hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=args.source_path, category=args.category, unique_id=unique_id, logger=logger)
 
         logger.debug(f'Output variables from prepare_temporary_folder() ---> hash_folder_path: {hash_folder_path}, posters_folder_path: {posters_folder_path}, hash_folder: {hash_folder}')
 
