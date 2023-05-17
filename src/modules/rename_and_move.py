@@ -58,7 +58,7 @@ def remove_brackets(filename):
     return re.sub(r'\s?\[.*?\]\s?', '', filename)
 
 def remove_series_tags(filename):
-    return re.sub(r'((?i)\((miniserie|serie|documental).*?\)|(?i)(miniserie|serie|documental)((de )?tv)?)', '', filename)
+    return re.sub(r'(?i)((\((miniserie|serie|documental).*?\)|(miniserie|serie|documental)((de )?tv)?))', '', filename)
 
 def remove_season_and_episode(filename):
     return re.sub(r'(\s?(\-\s)?)?(?i)s\d+(e\d+)?.*', '', filename)
