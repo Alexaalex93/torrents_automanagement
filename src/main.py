@@ -204,7 +204,13 @@ def main(args):
     setup_logging(bot_configuration_path, templates_path, main_directory, unique_id)
 
     logger = logging.getLogger()
-    logger.debug(f'Input arguments: {args}')
+    logger.debug('####################################################################################################')
+    logger.debug('####################################################################################################')
+    logger.debug('####################################################################################################')
+    logger.debug(f'Executed command: python {main_directory} --source_path {args.source_path} --category {args.category} --tracker {args.tracker}')
+    logger.debug('####################################################################################################')
+    logger.debug('####################################################################################################')
+    logger.debug('####################################################################################################')
 
     send_message = SendMessage(bot_configuration_path, templates_path)
 
