@@ -34,7 +34,7 @@ def get_name_from_parenthesis_and_bracket_format(original_file_name, logger):
     folder_name = movie_name.replace('.mkv', '')
     logger.debug(f'folder_name: {folder_name}')
 
-    return movie_name, folder_name
+    return folder_name
 
 
 def everything_after_year_to_end(filename):
@@ -62,10 +62,7 @@ def get_name_from_dot_separated_format(original_file_name, logger):
     folder_name = folder_name.replace('.', ' ').replace('  ', ' ')
     logger.debug(f'folder_name: {folder_name}')
 
-    movie_name = f'{folder_name}.mkv'
-    logger.debug(f'movie_name: {movie_name}')
-
-    return movie_name, folder_name
+    return folder_name
 
 
 
@@ -104,6 +101,7 @@ def get_series_name_olimpo_format(original_file_name, logger):
     file_with_no_season = remove_season_and_episode(file_with_no_series_tags)
     logger.debug(f'file_with_no_season: {file_with_no_season}')
 
+    #Se calcula pero no se hace nada. Pensar en un futuro
     season_episode = get_season_episode(file_with_no_series_tags)
     logger.debug(f'season_episode: {season_episode}')
 
@@ -123,7 +121,7 @@ def get_series_name_olimpo_format(original_file_name, logger):
     folder_name = replace_multiple_spaces(folder_name)
     logger.debug(f'folder_name: {folder_name}')
 
-    return folder_name, season_episode
+    return folder_name
 
 
 def determine_file_structure(original_file_name, tracker, logger):
@@ -135,7 +133,7 @@ def determine_file_structure(original_file_name, tracker, logger):
 def handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, is_series):
     logger.debug(f'Input variables for handle_file original_file_name: {original_file_name}, tracker: {tracker}, source_path: {source_path}, hash_folder_path: {hash_folder_path}')
 
-    file_name, folder_name = determine_file_structure(original_file_name, tracker, logger)
+    folder_name = determine_file_structure(original_file_name, tracker, logger)
 
     folder_to_scrap_path = f'{hash_folder_path}/{folder_name}'
     logger.debug(f'folder_to_scrap_path: {folder_to_scrap_path}')
