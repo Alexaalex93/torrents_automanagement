@@ -22,12 +22,17 @@ def everything_from_last_parenthesis_with_4digits_inside_to_end(filename):
 def everything_after_last_parenthesis_with_4digits_inside_to_end(everything_from_last_parenthesis):
     return re.findall(r'(?<=\(\d{4}\)).*\.mkv', everything_from_last_parenthesis)[0]
 
-def get_name_from_parenthesis_and_bracket_format(original_file_name):
+def get_name_from_parenthesis_and_bracket_format(original_file_name, logger):
     everything_from_last = everything_from_last_parenthesis_with_4digits_inside_to_end(original_file_name)
+    logger.debug(f'everything_from_last: {everything_from_last}')
     everything_after_last = everything_after_last_parenthesis_with_4digits_inside_to_end(everything_from_last)
+    logger.debug(f'everything_after_last: {everything_after_last}')
 
     movie_name = original_file_name.replace(everything_after_last, '.mkv')
+    logger.debug(f'movie_name: {movie_name}')
+
     folder_name = movie_name.replace('.mkv', '')
+    logger.debug(f'folder_name: {folder_name}')
 
     return movie_name, folder_name
 
@@ -38,17 +43,27 @@ def everything_after_year_to_end(filename):
 def year_plus_extension(filename):
     return re.search(r'\(?(19|20)\d{2}\)?\.mkv', filename)[0]
 
-def get_name_from_dot_separated_format(original_file_name):
+def get_name_from_dot_separated_format(original_file_name, logger):
     everything_after = everything_after_year_to_end(original_file_name)
+    logger.debug(f'everything_after: {everything_after}')
+
     folder_name = original_file_name.replace(everything_after, '.mkv')
+    logger.debug(f'folder_name: {folder_name}')
 
     year_plus_ext = year_plus_extension(folder_name)
+    logger.debug(f'year_plus_ext: {year_plus_ext}')
+
     year = re.findall(r'\d{4}', year_plus_ext)[0]
+    logger.debug(f'year: {year}')
 
     folder_name = folder_name.replace(year_plus_ext, f'({year})')
+    logger.debug(f'folder_name: {folder_name}')
+
     folder_name = folder_name.replace('.', ' ').replace('  ', ' ')
+    logger.debug(f'folder_name: {folder_name}')
 
     movie_name = f'{folder_name}.mkv'
+    logger.debug(f'movie_name: {movie_name}')
 
     return movie_name, folder_name
 
@@ -78,34 +93,49 @@ def get_year(filename):
 def replace_multiple_spaces(filename):
     return re.sub(r'\s{2,}', ' ', filename)
 
-def get_series_name_olimpo_format(original_file_name):
+def get_series_name_olimpo_format(original_file_name, logger):
+
     file_with_no_brackets = remove_brackets(original_file_name)
+    logger.debug(f'file_with_no_brackets: {file_with_no_brackets}')
+
     file_with_no_series_tags = remove_series_tags(file_with_no_brackets)
+    logger.debug(f'file_with_no_series_tags: {file_with_no_series_tags}')
+
     file_with_no_season = remove_season_and_episode(file_with_no_series_tags)
+    logger.debug(f'file_with_no_season: {file_with_no_season}')
 
     season_episode = get_season_episode(file_with_no_series_tags)
+    logger.debug(f'season_episode: {season_episode}')
+
     year = get_year(file_with_no_season)
+    logger.debug(f'year: {year}')
 
     folder_name = file_with_no_season
+    logger.debug(f'folder_name: {folder_name}')
+
     if year:
         folder_name =  re.sub(year + '.*', '', file_with_no_season)
+        logger.debug(f'folder_name: {folder_name}')
+
         folder_name = f'{folder_name.strip()} {year}'
+        logger.debug(f'folder_name: {folder_name}')
 
     folder_name = replace_multiple_spaces(folder_name)
+    logger.debug(f'folder_name: {folder_name}')
 
     return folder_name, season_episode
 
 
-def determine_file_structure(original_file_name, tracker):
+def determine_file_structure(original_file_name, tracker, logger):
     if 'hd-olimpo' in tracker.lower():
-        return get_series_name_olimpo_format(original_file_name) if 'S' in original_file_name else get_name_from_parenthesis_and_bracket_format(original_file_name)
+        return get_series_name_olimpo_format(original_file_name, logger) if 'S' in original_file_name else get_name_from_parenthesis_and_bracket_format(original_file_name, logger)
     elif 'privatehd' in tracker.lower():
-        return get_name_from_dot_separated_format(original_file_name)
+        return get_name_from_dot_separated_format(original_file_name, logger)
 
 def handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, is_series):
     logger.debug(f'Input variables for handle_file original_file_name: {original_file_name}, tracker: {tracker}, source_path: {source_path}, hash_folder_path: {hash_folder_path}')
 
-    file_name, folder_name = determine_file_structure(original_file_name, tracker)
+    file_name, folder_name = determine_file_structure(original_file_name, tracker, logger)
 
     folder_to_scrap_path = f'{hash_folder_path}/{folder_name}'
     os.makedirs(folder_to_scrap_path, exist_ok=True)
