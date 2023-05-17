@@ -26,10 +26,12 @@ def scrap(hash_folder_path, hash_folder, posters_folder_path, downloads_mount_po
 
     logger.debug(f'Docker command: docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
 
-    os.system(f'docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {hash_folder_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
+    os.system(f'docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
 
-    if glob.glob(f'{hash_folder_path}/*/*poster*'):
-        path = glob.glob(f'{hash_folder_path}/*/*poster*')[0]
+    poster_path = glob.glob(os.path.join('/downloads/scrap_movies/6cc7c17e72ed9feeafc679a0e67169aa', '*', '*poster*'))
+    logger.debug(f'poster_path result {poster_path}')
+    if poster_path:
+        path = poster_path[0]
         extension = os.path.splitext(path)[1]
         shutil.copy(path, f'{posters_folder_path}/{hash_folder}{extension}')
 
