@@ -28,10 +28,10 @@ def get_name_from_parenthesis_and_bracket_format(original_file_name, logger):
     everything_after_last = everything_after_last_parenthesis_with_4digits_inside_to_end(everything_from_last)
     logger.debug(f'everything_after_last: {everything_after_last}')
 
-    movie_name = original_file_name.replace(everything_after_last, '.mkv')
-    logger.debug(f'movie_name: {movie_name}')
+    name_trimmed = original_file_name.replace(everything_after_last, '.mkv')
+    logger.debug(f'name_trimmed: {name_trimmed}')
 
-    folder_name = movie_name.replace('.mkv', '')
+    folder_name = name_trimmed.replace('.mkv', '')
     logger.debug(f'folder_name: {folder_name}')
 
     return folder_name
@@ -101,7 +101,6 @@ def get_series_name_olimpo_format(original_file_name, logger):
     file_with_no_season = remove_season_and_episode(file_with_no_series_tags)
     logger.debug(f'file_with_no_season: {file_with_no_season}')
 
-    #Se calcula pero no se hace nada. Pensar en un futuro
     season_episode = get_season_episode(file_with_no_series_tags)
     logger.debug(f'season_episode: {season_episode}')
 
@@ -121,6 +120,9 @@ def get_series_name_olimpo_format(original_file_name, logger):
     folder_name = replace_multiple_spaces(folder_name)
     logger.debug(f'folder_name: {folder_name}')
 
+    name_trimmed = f'{folder_name} {season_episode}.mkv'
+    logger.debug(f'name_trimmed: {name_trimmed}')
+
     return folder_name
 
 
@@ -139,10 +141,11 @@ def handle_file(original_file_name, tracker, source_path, hash_folder_path, logg
     logger.debug(f'folder_to_scrap_path: {folder_to_scrap_path}')
 
     os.makedirs(folder_to_scrap_path, exist_ok=True)
-
+    file_name = f'{folder_name}.mkv'
     if os.path.isdir(source_path):
         for file in glob.glob(f"{source_path}/*.mkv"):
-            if is_series:
+
+            if is_series: #revisar estos casos
                 file_name = os.path.split(file)[1]
                 file_name = re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv', file_name)
                 logger.debug(f'file_name: {file_name}')
@@ -151,8 +154,10 @@ def handle_file(original_file_name, tracker, source_path, hash_folder_path, logg
             logger.debug(f'shutil.copy({file}, {hash_folder_path}/{folder_name}/{file_name})')
 
     else:
+        if is_series:
+            file_name = re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv', file_name)
         shutil.copy(source_path, f'{hash_folder_path}/{folder_name}/{file_name}')
-        logger.debug(f'shutil.copy({source_path}, {hash_folder_path}/{folder_name}/{file_name})')
+        logger.debug(f'shutil.copy({source_path}, {hash_folder_path}/{folder_name}/{file_name}')
 
 def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
     handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, True)
