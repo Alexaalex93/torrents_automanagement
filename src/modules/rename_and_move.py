@@ -61,7 +61,7 @@ def remove_series_tags(filename):
     return re.sub(r'(?i)((\((miniserie|serie|documental).*?\)|(miniserie|serie|documental)((de )?tv)?))', '', filename)
 
 def remove_season_and_episode(filename):
-    return re.sub(r'(\s?(\-\s)?)?(?i)s\d+(e\d+)?.*', '', filename)
+    return re.sub(r'(?i)(\s?(\-\s)?)?s\d+(e\d+)?.*', '', filename)
 
 def get_season_episode(filename):
     match = re.search(r'(?i)s\d+(\-(s)?\d+)*(e\d+)?', filename)
