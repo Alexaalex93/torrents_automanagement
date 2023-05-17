@@ -238,13 +238,13 @@ def main(args):
         title, resolution, folder_to_upload_path = create_title(hash_folder_path=hash_folder_path, category=args.category, logger=logger)
 
         logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
-
+        '''
         upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
         send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
 
         perform_housekeeping(hash_folder_path=hash_folder_path, logger=logger)
-
+        '''
     except Exception as e:
 
        logger.critical( f'General error in the script: {e}')
