@@ -138,6 +138,8 @@ def handle_file(original_file_name, tracker, source_path, hash_folder_path, logg
     file_name, folder_name = determine_file_structure(original_file_name, tracker, logger)
 
     folder_to_scrap_path = f'{hash_folder_path}/{folder_name}'
+    logger.debug(f'folder_to_scrap_path: {folder_to_scrap_path}')
+
     os.makedirs(folder_to_scrap_path, exist_ok=True)
 
     if os.path.isdir(source_path):
@@ -145,9 +147,14 @@ def handle_file(original_file_name, tracker, source_path, hash_folder_path, logg
             if is_series:
                 file_name = os.path.split(file)[1]
                 file_name = re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv', file_name)
+                logger.debug(f'file_name: {file_name}')
+
             shutil.copy(file, f'{hash_folder_path}/{folder_name}/{file_name}')
+            logger.debug(f'shutil.copy({file}, {hash_folder_path}/{folder_name}/{file_name})')
+
     else:
         shutil.copy(source_path, f'{hash_folder_path}/{folder_name}/{file_name}')
+        logger.debug(f'shutil.copy({source_path}, {hash_folder_path}/{folder_name}/{file_name})')
 
 def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
     handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, True)
