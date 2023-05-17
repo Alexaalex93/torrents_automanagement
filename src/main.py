@@ -17,6 +17,7 @@ import os
 import re
 import sys
 import glob
+import traceback
 
 import logging
 import functools
@@ -176,12 +177,12 @@ def upload_file_to_drive(configuration, folder_to_upload_path, category, logger)
 
 # Perform cleaning operations
 @log_function_call
-def perform_housekeeping(folder_to_upload_path, logger):
+def perform_housekeeping(hash_folder_path, logger):
 
     try:
         logger.info('Starting housekeeping')
 
-        shutil.rmtree(folder_to_upload_path)
+        shutil.rmtree(hash_folder_path)
 
         logger.info('Housekeeping, file deleted from temporary folder')
 
@@ -234,11 +235,13 @@ def main(args):
 
         send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
 
-        perform_housekeeping(folder_to_upload_path=folder_to_upload_path, logger=logger)
+        perform_housekeeping(hash_folder_path=hash_folder_path, logger=logger)
 
     except Exception as e:
 
        logger.critical( f'General error in the script: {e}')
+       tb = traceback.format_exc()
+       logger.debug(tb)
        sys.exit(1)
 
 
