@@ -133,7 +133,7 @@ def determine_file_structure(original_file_name, tracker, logger):
         return get_name_from_dot_separated_format(original_file_name, logger)
 
 def handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, is_series):
-    logger.debug(f'Input variables for handle_file original_file_name: {original_file_name}, tracker: {tracker}, source_path: {source_path}, hash_folder_path: {hash_folder_path}')
+    logger.debug(f'Input variables for handle_file original_file_name: {original_file_name}, tracker: {tracker}, source_path: {source_path}, hash_folder_path: {hash_folder_path}, logger: {logger}, is_series:{is_series}')
 
     folder_name = determine_file_structure(original_file_name, tracker, logger)
 
