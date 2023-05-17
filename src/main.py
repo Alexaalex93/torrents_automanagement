@@ -133,6 +133,8 @@ def process_downloaded_file(args, configuration, hash_folder_path, posters_folde
 
     except Exception as e:
         logger.error(f'Error moving the file to temporary folder: {e}')
+        tb = traceback.format_exc()
+        logger.debug(tb)
         sys.exit(1)
     try:
         logger.info('Starting scraping')
@@ -144,6 +146,8 @@ def process_downloaded_file(args, configuration, hash_folder_path, posters_folde
 
     except Exception as e:
         logger.error(f'Error while scraping: {e}')
+        tb = traceback.format_exc()
+        logger.debug(tb)
 
     return poster_path
 
@@ -173,6 +177,8 @@ def upload_file_to_drive(configuration, folder_to_upload_path, category, logger)
 
     except Exception as e:
         logger.error(f'Error while uploading the file: {e}')
+        tb = traceback.format_exc()
+        logger.debug(tb)
         sys.exit(1)
 
 # Perform cleaning operations
@@ -188,6 +194,8 @@ def perform_housekeeping(hash_folder_path, logger):
 
     except Exception as e:
         logger.error(f'Error in housekeeping, could not delete the temporary folder: {e}')
+        tb = traceback.format_exc()
+        logger.debug(tb)
         sys.exit(1)
 
 # The main function orchestrates the entire flow

@@ -16,7 +16,6 @@ import os
 import shutil
 import re
 
-
 def get_name_from_parenthesis_and_bracket_format(original_file_name):
     # This function extracts and processes the movie name from a name structure in parenthesis and brackets format.
 
