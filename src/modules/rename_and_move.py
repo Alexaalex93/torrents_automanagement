@@ -259,7 +259,7 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
         episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
         episode_destination= os.path.join(folder_to_scrap_path, episode_name)
         shutil.copy(source_path, episode_destination)
-        logger.debug(f'Copied {file} to {episode_destination}')
+        logger.debug(f'Copied {source_path} to {episode_destination}')
 
     return series_telegram_message
 
