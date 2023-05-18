@@ -181,9 +181,9 @@ def clean_series_folder_name(folder_name, tracker, logger):
         else:
             logger.info(f'Could not parse series info: {folder_name}')
 
-    get_series_telegram_message(folder_name, title, year, tracker, logger)
+    series_telegram_message = get_series_telegram_message(folder_name, title, year, tracker, logger)
 
-    return folder_name_cleaned
+    return folder_name_cleaned, series_telegram_message
 
 def clean_movies_folder_name(file_name, tracker, logger):
     logger.debug(f'clean_movies_folder_name(file_name="{file_name}", tracker="{tracker}", logger="{logger}")')
@@ -218,7 +218,7 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
 
 
 
-    folder_name_cleaned, title, year = clean_series_folder_name(folder_name=original_file_name, tracker=tracker, logger=logger)
+    folder_name_cleaned, series_telegram_message = clean_series_folder_name(folder_name=original_file_name, tracker=tracker, logger=logger)
     logger.debug(f'folder_name_cleaned {folder_name_cleaned}')
 
     folder_to_scrap_path = os.path.join(hash_folder_path, folder_name_cleaned)
@@ -237,7 +237,7 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
         episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
         shutil.copy(source_path, os.path.join(folder_to_scrap_path, episode_name))
 
-    series_telegram_message = get_series_telegram_message(original_file_name=original_file_name, title=title, year=year, tracker=tracker, logger=logger)
+
 
     return series_telegram_message
 
