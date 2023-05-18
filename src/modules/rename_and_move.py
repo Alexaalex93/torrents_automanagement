@@ -51,7 +51,7 @@ def get_series_telegram_message(original_file_name, title, year, tracker, logger
         logger.debug('Inside olimpo condition')
         season_episode_match = re.search(r'((?:s|t|season|temporada|temp)\s*?\d{1,3}(?:\s*-\s*(?:s|t|season|temporada|temp)\s*\d{1,3})?(?:\s*(?:episodio|episode|capitulo|cap|ep|c|e)\s*\d{1,3})?)', original_file_name, re.IGNORECASE)
 
-        season_episode = season_episode_match.group(1).trim()
+        season_episode = season_episode_match.group(1).strip()
         season_start, season_end = extract_season_range(season_episode)
         logger.debug(f'season_start: {season_start}')
         logger.debug(f'season_end: {season_end}')
