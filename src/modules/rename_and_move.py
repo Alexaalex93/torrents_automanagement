@@ -61,20 +61,20 @@ def get_series_telegram_message(original_file_name, title, year, tracker, logger
 
         if episode:
             if year:
-                series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
+                series_telegram_message = f'{title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
             else:
-                series_telegram_message = f'Title: {title}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
+                series_telegram_message = f'{title}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
         else:
             if year:
                 if season_end:
-                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+                    series_telegram_message = f'{title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
                 else:
-                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
+                    series_telegram_message = f'{title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
             else:
                 if season_end:
-                    series_telegram_message = f'Title: {title}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+                    series_telegram_message = f'{title}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
                 else:
-                    series_telegram_message = f'Title: {title}\nSeason: {season_start}\nType: Full Season'
+                    series_telegram_message = f'{title}\nSeason: {season_start}\nType: Full Season'
 
     elif 'hd-privatehd' in tracker:
         logger.debug('Inside privatehd condition')
@@ -97,12 +97,12 @@ def get_series_telegram_message(original_file_name, title, year, tracker, logger
             logger.debug(f'season_end: {season_end}')
 
             if episode:
-                series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
+                series_telegram_message = f'{title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
             else:
                 if season_end:
-                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+                    series_telegram_message = f'{title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
                 else:
-                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
+                    series_telegram_message = f'{title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
         else:
             logger.info(f'Could not parse series info: {original_file_name}')
 
