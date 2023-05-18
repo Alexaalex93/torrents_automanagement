@@ -19,29 +19,41 @@ import re
 def clean_series_episode_name(episode_name, tracker, logger):
 
     file_name, file_extension = os.path.splitext(episode_name)
+    logger.debug(f'file_name: {file_name}, file_extension: {file_extension}')
     epiosode_name_cleaned = None
 
     if 'hd-olimpo' in tracker:
-        match = re.search(r'^(.*?)( \((\d{4})\))?( S(\d{2})(E(\d{2}))?(?:-S(\d{2}))?)?.*', file_name)
+        match = re.search(r'^(.*?)( \((\d{4})\))?( S(\d{2})(E(\d{2}))?(?:-S(\d{2}))?)?.*', episode_name)
         if match:
             title = match.group(1).replace('.', ' ').strip()
+            logger.debug(f'title: {title}')
+
             season = match.group(3)
+            logger.debug(f'season: {season}')
+
             episode = match.group(5)
+            logger.debug(f'episode: {episode}')
+
             epiosode_name_cleaned = f'{title} S{season}E{episode}{file_extension}'
 
         else:
             logger.info(f'Could not parse series info: {episode_name}')
 
     elif 'hd-privatehd' in tracker:
-        match = re.search(r'^(.*?)[.]([sS](\d{2}))([eE](\d{2}))?.*', file_name)
+        match = re.search(r'^(.*?)[.]([sS](\d{2}))([eE](\d{2}))?.*', episode_name)
         if match:
             title = match.group(1).replace('.', ' ').strip()
+            logger.debug(f'title: {title}')
+
             season = match.group(3)
+            logger.debug(f'season: {season}')
+
             episode = match.group(5)
+            logger.debug(f'episode: {episode}')
             epiosode_name_cleaned = f'{title} S{season}E{episode}{file_extension}'
 
         else:
-            logger.info(f'Could not parse series info: {file_name}')
+            logger.info(f'Could not parse series info: {episode_name}')
 
     return epiosode_name_cleaned
 
@@ -53,7 +65,11 @@ def clean_series_folder_name(folder_name, tracker, logger):
         match = re.search(r'^(.*?)( \((\d{4})\))?( S(\d{2})(E(\d{2}))?(?:-S(\d{2}))?)?.*', folder_name)
         if match:
             title = match.group(1)
+            logger.debug(f'title: {title}')
+
             year = match.group(3)
+            logger.debug(f'year: {year}')
+
             folder_name_cleaned = f'{title} ({year})' if year else title
         else:
             logger.info(f'Could not parse series info: {folder_name}')
@@ -61,6 +77,8 @@ def clean_series_folder_name(folder_name, tracker, logger):
         match = re.search(r'^([\w.\-]+)([sS](\d{2}))([eE](\d{2}))?.*', folder_name)
         if match:
             folder_name_cleaned = match.group(1).replace('.', ' ')
+            logger.debug(f'folder_name_cleaned: {folder_name_cleaned}')
+
         else:
             logger.info(f'Could not parse series info: {folder_name}')
 
@@ -98,10 +116,20 @@ def extract_episode_season_numbers(original_file_name, tracker, logger):
 
         if match:
             title = match.group(1)
+            logger.debug(f'title: {title}')
+
             year = match.group(3)
+            logger.debug(f'year: {year}')
+
             season_start = match.group(5)
+            logger.debug(f'season_start: {season_start}')
+
             episode = match.group(7)
+            logger.debug(f'episode: {episode}')
+
             season_end = match.group(8)
+            logger.debug(f'season_end: {season_end}')
+
 
             if episode:
                 series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
