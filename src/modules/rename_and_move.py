@@ -17,6 +17,7 @@ import shutil
 import re
 
 def clean_series_episode_name(episode_name, tracker, logger):
+    logger.debug(f'clean_series_episode_name(episode_name="{episode_name}", tracker="{tracker}", logger="{logger}")')
 
     file_name, file_extension = os.path.splitext(episode_name)
     logger.debug(f'file_name: {file_name}, file_extension: {file_extension}')
@@ -58,6 +59,7 @@ def clean_series_episode_name(episode_name, tracker, logger):
     return epiosode_name_cleaned
 
 def clean_series_folder_name(folder_name, tracker, logger):
+    logger.debug(f'clean_series_folder_name(folder_name="{folder_name}", tracker="{tracker}", logger="{logger}")')
 
     folder_name_cleaned = None
 
@@ -85,6 +87,7 @@ def clean_series_folder_name(folder_name, tracker, logger):
     return folder_name_cleaned
 
 def clean_movies_folder_name(file_name, tracker, logger):
+    logger.debug(f'clean_movies_folder_name(file_name="{file_name}", tracker="{tracker}", logger="{logger}")')
 
     folder_name_cleaned = None
 
@@ -108,6 +111,7 @@ def clean_movies_folder_name(file_name, tracker, logger):
     return folder_name_cleaned
 
 def extract_episode_season_numbers(original_file_name, tracker, logger):
+    logger.debug(f'extract_episode_season_numbers(original_file_name="{original_file_name}", tracker="{tracker}", logger="{logger}")')
 
     series_telegram_message = None
 
