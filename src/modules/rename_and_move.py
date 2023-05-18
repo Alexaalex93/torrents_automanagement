@@ -222,8 +222,7 @@ def clean_movies_folder_name(file_name, tracker, logger):
     return folder_name_cleaned
 
 def escape_glob_pattern(pattern):
-    special_characters = r"[](){}?*+\^$|."
-    escaped_pattern = re.sub(fr"[{re.escape(special_characters)}]", r"\\\g<0>", pattern)
+    escaped_pattern = pattern.replace("[", "[[]").replace("]", "[]]")
     return escaped_pattern
 
 def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
@@ -239,9 +238,10 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
 
     if os.path.isdir(source_path):
 
-        source_path_escaped = re.escape(source_path)
+        source_path_escaped = escape_glob_pattern(source_path)
         files_path = os.path.join(source_path_escaped, '**', '*.mkv')
         logger.debug(f'files_path: {files_path}')
+        glob.glob('/downloads/series_fhd_webdl/Holding\ \(2022\)\ S01\ \[MiniSerie\]\[FILMN\ WEB\-DL\ 1080p\ AVC\ ES\-EN\ AAC\ 5\.1\-2\.0\ Subs\]\[HDO\]/**/*.mkv', recursive=True)
 
         mkv_files = glob.glob(files_path, recursive=True)
         logger.debug(f'mkv_files: {mkv_files}')
