@@ -231,9 +231,9 @@ def main(args):
 
         logger.debug(f'Output variables from prepare_temporary_folder() ---> hash_folder_path: {hash_folder_path}, posters_folder_path: {posters_folder_path}, hash_folder: {hash_folder}')
 
-        poster_path, series_telegram_message = process_downloaded_file(args, configuration, hash_folder_path, posters_folder_path, hash_folder, logger)
+        poster_path, series_telegram_message = process_downloaded_file(args=args, configuration=configuration, hash_folder_path=hash_folder_path, posters_folder_path=posters_folder_path, hash_folder=hash_folder, logger=logger)
 
-        logger.debug(f'Output variables from process_downloaded_file() ---> poster_path: {poster_path}')
+        logger.debug(f'Output variables from process_downloaded_file() ---> poster_path: {poster_path}. series_telegram_message: {series_telegram_message}')
 
         title, resolution, folder_to_upload_path = create_title(hash_folder_path=hash_folder_path, category=args.category, logger=logger)
 

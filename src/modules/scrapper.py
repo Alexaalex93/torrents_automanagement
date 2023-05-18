@@ -28,6 +28,7 @@ def scrap(hash_folder_path, hash_folder, posters_folder_path, downloads_mount_po
 
     os.system(f'docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
 
+    logger.debug('glob to {(os.path.join(hash_folder_path, "*", "*poster*")}')
     poster_path = glob.glob(os.path.join(hash_folder_path, '*', '*poster*'))
     logger.debug(f'poster_path result {poster_path}')
     if poster_path:
