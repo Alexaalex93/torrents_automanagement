@@ -236,16 +236,22 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
     os.makedirs(folder_to_scrap_path, exist_ok=True)
 
     if os.path.isdir(source_path):
-        mkv_files = glob.glob(os.path.join(source_path, '**', '*.mkv'), recursive=True)
+        files_path = os.path.join(source_path, '**', '*.mkv')
+        logger.debug('finding files in ')
+        mkv_files = glob.glob(files_path, recursive=True)
+        logger.debug(f'mkv_files: {mkv_files}')
         for file in mkv_files:
             base_name = os.path.basename(file)
             episode_name = clean_series_episode_name(episode_name=base_name, tracker=tracker, logger=logger)
-            shutil.copy(file, os.path.join(folder_to_scrap_path, episode_name))
+            episode_destination = os.path.join(folder_to_scrap_path, episode_name)
+            shutil.copy(file, episode_destination)
+            logger.debug(f'Copied {file} to {episode_destination}')
+
     else:
         episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
-        shutil.copy(source_path, os.path.join(folder_to_scrap_path, episode_name))
-
-
+        episode_destination= os.path.join(folder_to_scrap_path, episode_name)
+        shutil.copy(source_path, episode_destination)
+        logger.debug(f'Copied {file} to {episode_destination}')
 
     return series_telegram_message
 
@@ -261,7 +267,11 @@ def handle_movies(original_file_name, tracker, source_path, hash_folder_path, lo
 
     os.makedirs(folder_to_scrap_path, exist_ok=True)
 
-    shutil.copy(source_path, os.path.join(folder_to_scrap_path, f'{folder_name_cleaned}{file_extension}'))
+    movie_destination = os.path.join(folder_to_scrap_path, f'{folder_name_cleaned}{file_extension}')
+
+    shutil.copy(source_path, movie_destination)
+    logger.debug(f'Copied {source_path} to {movie_destination}')
+
 
 def rename_and_move(original_file_name, hash_folder_path, source_path, category, tracker, logger):
     # This function determines whether the file is a series or a movie and calls the appropriate function to handle it.
