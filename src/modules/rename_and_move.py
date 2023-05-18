@@ -239,7 +239,7 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
 
     if os.path.isdir(source_path):
 
-        source_path_escaped =  escape_glob_pattern(source_path)
+        source_path_escaped = re.escape(source_path)
         files_path = os.path.join(source_path_escaped, '**', '*.mkv')
         logger.debug(f'files_path: {files_path}')
 
