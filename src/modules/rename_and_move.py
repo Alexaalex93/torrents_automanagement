@@ -60,13 +60,21 @@ def get_series_telegram_message(original_file_name, title, year, tracker, logger
         logger.debug(f'episode: {episode}')
 
         if episode:
-            series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
-        else:
-            if season_end:
-                series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+            if year:
+                series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
             else:
-                series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
-
+                series_telegram_message = f'Title: {title}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
+        else:
+            if year:
+                if season_end:
+                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+                else:
+                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
+            else:
+                if season_end:
+                    series_telegram_message = f'Title: {title}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+                else:
+                    series_telegram_message = f'Title: {title}\nSeason: {season_start}\nType: Full Season'
 
     elif 'hd-privatehd' in tracker:
         logger.debug('Inside privatehd condition')
