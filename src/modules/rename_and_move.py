@@ -228,8 +228,6 @@ def escape_glob_pattern(pattern):
 
 def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
 
-
-
     folder_name_cleaned, series_telegram_message = clean_series_folder_name(folder_name=original_file_name, tracker=tracker, logger=logger)
     logger.debug(f'folder_name_cleaned {folder_name_cleaned}')
 
@@ -241,11 +239,9 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
 
     if os.path.isdir(source_path):
 
-        files_path = os.path.join(source_path, '**', '*.mkv')
+        source_path_escaped =  escape_glob_pattern(source_path)
+        files_path = os.path.join(source_path_escaped, '**', '*.mkv')
         logger.debug(f'files_path: {files_path}')
-
-        files_path_escaped = escape_glob_pattern(files_path)
-        logger.debug(f'files_path_escaped: {files_path_escaped}')
 
         mkv_files = glob.glob(files_path, recursive=True)
         logger.debug(f'mkv_files: {mkv_files}')
