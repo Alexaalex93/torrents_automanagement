@@ -237,7 +237,7 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
         episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
         shutil.copy(source_path, os.path.join(folder_to_scrap_path, episode_name))
 
-    series_telegram_message = extract_episode_season_numbers(original_file_name=original_file_name, title=title, year=year, tracker=tracker, logger=logger)
+    series_telegram_message = get_series_telegram_message(original_file_name=original_file_name, title=title, year=year, tracker=tracker, logger=logger)
 
     return series_telegram_message
 
