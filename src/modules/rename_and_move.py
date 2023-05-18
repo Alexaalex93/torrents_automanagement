@@ -222,7 +222,10 @@ def clean_movies_folder_name(file_name, tracker, logger):
     return folder_name_cleaned
 
 def escape_glob_pattern(pattern):
-    escaped_pattern = pattern.replace("[", "[[]").replace("]", "[]]")
+    escaped_pattern = re.sub(r'\[', r'[[', pattern)
+    escaped_pattern = re.sub(r'\]', r']]', escaped_pattern)
+    escaped_pattern = re.sub(r'\[\[', r'[[]', escaped_pattern)
+    escaped_pattern = re.sub(r'\]\]', r'[]]', escaped_pattern)
     return escaped_pattern
 
 def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
