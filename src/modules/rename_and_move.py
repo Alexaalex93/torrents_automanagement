@@ -158,11 +158,14 @@ def clean_series_folder_name(folder_name, tracker, logger):
         logger.debug('Inside olimpo condition')
 
         title_match = re.search(r'^(.*?)(?:(?:(?:\((?:19|20)\d{2}\))|(?:(?:s|t|season|temporada|temp)\s*?\d{1,3}(?:\s*-\s*(?:s|t|season|temporada|temp)\s*\d{1,3})?(?:\s*(?:episodio|episode|capitulo|cap|ep|c|e)\s*\d{1,3})?))|$)', folder_name, re.IGNORECASE)
+
         title = re.sub(r'^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$', '', title_match.group(1)) if title_match else None
         logger.debug(f'title: {title}')
 
         year_match = re.search(r'(\(?(?:19|20)\d{2}\)?)', folder_name, re.IGNORECASE)
-        year = year_match.group(1).replace('(', '').replace(')', '')
+        if year_match:
+            year = re.sub(r"\(|\)", "", year_match.group(1))
+
         logger.debug(f'year: {year}')
 
         folder_name_cleaned = f'{title} ({year})' if year else title
