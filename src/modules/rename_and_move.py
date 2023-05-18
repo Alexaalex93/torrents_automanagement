@@ -221,6 +221,10 @@ def clean_movies_folder_name(file_name, tracker, logger):
 
     return folder_name_cleaned
 
+def escape_glob_pattern(pattern):
+    special_characters = r"[](){}?*+\^$|."
+    escaped_pattern = re.sub(fr"[{re.escape(special_characters)}]", r"\\\g<0>", pattern)
+    return escaped_pattern
 
 def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
 
@@ -238,7 +242,11 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
     if os.path.isdir(source_path):
 
         files_path = os.path.join(source_path, '**', '*.mkv')
-        logger.debug(f'finding files in {files_path}')
+        logger.debug(f'files_path: {files_path}')
+
+        files_path_escaped = escape_glob_pattern(files_path)
+        logger.debug(f'files_path_escaped: {files_path_escaped}')
+
         mkv_files = glob.glob(files_path, recursive=True)
         logger.debug(f'mkv_files: {mkv_files}')
         for file in mkv_files:
