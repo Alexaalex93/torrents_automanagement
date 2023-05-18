@@ -238,7 +238,7 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
     if os.path.isdir(source_path):
 
         files_path = os.path.join(source_path, '**', '*.mkv')
-        logger.debug('finding files in {files_path}')
+        logger.debug(f'finding files in {files_path}')
         mkv_files = glob.glob(files_path, recursive=True)
         logger.debug(f'mkv_files: {mkv_files}')
         for file in mkv_files:
