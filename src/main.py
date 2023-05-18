@@ -127,7 +127,7 @@ def process_downloaded_file(args, configuration, hash_folder_path, posters_folde
 
         logger.info('Moving file to temporary folder')
 
-        rename_and_move(original_file_name=original_file_name, hash_folder_path=hash_folder_path, source_path=args.source_path, category=args.category, tracker=args.tracker, logger=logger)
+        series_telegram_message = rename_and_move(original_file_name=original_file_name, hash_folder_path=hash_folder_path, source_path=args.source_path, category=args.category, tracker=args.tracker, logger=logger)
 
         logger.info('File moved to temporary folder')
 
@@ -149,7 +149,7 @@ def process_downloaded_file(args, configuration, hash_folder_path, posters_folde
         tb = traceback.format_exc()
         logger.error(tb)
 
-    return poster_path
+    return poster_path, series_telegram_message
 
 # Create the title for the file
 @log_function_call
@@ -231,11 +231,13 @@ def main(args):
 
         logger.debug(f'Output variables from prepare_temporary_folder() ---> hash_folder_path: {hash_folder_path}, posters_folder_path: {posters_folder_path}, hash_folder: {hash_folder}')
 
-        poster_path = process_downloaded_file(args, configuration, hash_folder_path, posters_folder_path, hash_folder, logger)
+        poster_path, series_telegram_message = process_downloaded_file(args, configuration, hash_folder_path, posters_folder_path, hash_folder, logger)
 
         logger.debug(f'Output variables from process_downloaded_file() ---> poster_path: {poster_path}')
 
         title, resolution, folder_to_upload_path = create_title(hash_folder_path=hash_folder_path, category=args.category, logger=logger)
+
+        title = series_telegram_message if ('series' in args.category and series_telegram_message is not None) else title
 
         logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
         '''

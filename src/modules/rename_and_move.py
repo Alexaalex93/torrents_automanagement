@@ -16,162 +16,169 @@ import os
 import shutil
 import re
 
-def everything_from_last_parenthesis_with_4digits_inside_to_end(filename):
-    return re.findall(r'(?!.*[^(]\(\d{4}\)).*\.mkv', filename)[0]
+def clean_series_episode_name(episode_name, tracker, logger):
 
-def everything_after_last_parenthesis_with_4digits_inside_to_end(everything_from_last_parenthesis):
-    return re.findall(r'(?<=\(\d{4}\)).*\.mkv', everything_from_last_parenthesis)[0]
+    file_name, file_extension = os.path.splitext(episode_name)
+    epiosode_name_cleaned = None
 
-def get_name_from_parenthesis_and_bracket_format(original_file_name, logger):
-    everything_from_last = everything_from_last_parenthesis_with_4digits_inside_to_end(original_file_name)
-    logger.debug(f'everything_from_last: {everything_from_last}')
-    everything_after_last = everything_after_last_parenthesis_with_4digits_inside_to_end(everything_from_last)
-    logger.debug(f'everything_after_last: {everything_after_last}')
+    if 'hd-olimpo' in tracker:
+        match = re.search(r'^(.*?)( \((\d{4})\))?( S(\d{2})(E(\d{2}))?(?:-S(\d{2}))?)?.*', file_name)
+        if match:
+            title = match.group(1).replace('.', ' ').strip()
+            season = match.group(3)
+            episode = match.group(5)
+            epiosode_name_cleaned = f'{title} S{season}E{episode}{file_extension}'
 
-    name_trimmed = original_file_name.replace(everything_after_last, '.mkv')
-    logger.debug(f'name_trimmed: {name_trimmed}')
+        else:
+            logger.info(f'Could not parse series info: {episode_name}')
 
-    folder_name = name_trimmed.replace('.mkv', '')
-    logger.debug(f'folder_name: {folder_name}')
+    elif 'hd-privatehd' in tracker:
+        match = re.search(r'^(.*?)[.]([sS](\d{2}))([eE](\d{2}))?.*', file_name)
+        if match:
+            title = match.group(1).replace('.', ' ').strip()
+            season = match.group(3)
+            episode = match.group(5)
+            epiosode_name_cleaned = f'{title} S{season}E{episode}{file_extension}'
 
-    return folder_name
+        else:
+            logger.info(f'Could not parse series info: {file_name}')
 
+    return epiosode_name_cleaned
 
-def everything_after_year_to_end(filename):
-    return re.search(r'\b(?!.*\(?(19|20)\d{2}\)?(\.|\s)).*\.mkv', filename)[0]
+def clean_series_folder_name(folder_name, tracker, logger):
 
-def year_plus_extension(filename):
-    return re.search(r'\(?(19|20)\d{2}\)?\.mkv', filename)[0]
+    folder_name_cleaned = None
 
-def get_name_from_dot_separated_format(original_file_name, logger):
-    everything_after = everything_after_year_to_end(original_file_name)
-    logger.debug(f'everything_after: {everything_after}')
+    if 'hd-olimpo' in tracker:
+        match = re.search(r'^(.*?)( \((\d{4})\))?( S(\d{2})(E(\d{2}))?(?:-S(\d{2}))?)?.*', folder_name)
+        if match:
+            title = match.group(1)
+            year = match.group(3)
+            folder_name_cleaned = f'{title} ({year})' if year else title
+        else:
+            logger.info(f'Could not parse series info: {folder_name}')
+    elif 'hd-privatehd' in tracker:
+        match = re.search(r'^([\w.\-]+)([sS](\d{2}))([eE](\d{2}))?.*', folder_name)
+        if match:
+            folder_name_cleaned = match.group(1).replace('.', ' ')
+        else:
+            logger.info(f'Could not parse series info: {folder_name}')
 
-    folder_name = original_file_name.replace(everything_after, '.mkv')
-    logger.debug(f'folder_name: {folder_name}')
+    return folder_name_cleaned
 
-    year_plus_ext = year_plus_extension(folder_name)
-    logger.debug(f'year_plus_ext: {year_plus_ext}')
+def clean_movies_folder_name(file_name, tracker, logger):
 
-    year = re.findall(r'\d{4}', year_plus_ext)[0]
-    logger.debug(f'year: {year}')
+    folder_name_cleaned = None
 
-    folder_name = folder_name.replace(year_plus_ext, f'({year})')
-    logger.debug(f'folder_name: {folder_name}')
+    if 'hd-olimpo' in tracker:
+        match = re.search(r'^([^\[\]]*) \((\d{4})\)', file_name)
+        if match:
+            title = match.group(1).strip()
+            year = match.group(2)
+            folder_name_cleaned = f'{title} ({year})' if year else title
+        else:
+            logger.info(f'Could not parse movie info: {file_name}')
+    elif 'hd-privatehd' in tracker:
+        match = re.search(r'^(.*?)(\d{4}).*', file_name)
+        if match:
+            title = match.group(1).replace('.', ' ').strip()
+            year = match.group(2)
+            folder_name_cleaned = f'{title} ({year})' if year else title
+        else:
+            logger.info(f'Could not parse movie info: {file_name}')
 
-    folder_name = folder_name.replace('.', ' ').replace('  ', ' ')
-    logger.debug(f'folder_name: {folder_name}')
+    return folder_name_cleaned
 
-    return folder_name
+def extract_episode_season_numbers(original_file_name, tracker, logger):
 
+    series_telegram_message = None
 
+    if 'hd-olimpo' in tracker:
+        match = re.search(r'^(.*?)( \((\d{4})\))?( S(\d{2})(E(\d{2}))?(?:-S(\d{2}))?)?.*', original_file_name)
 
-def remove_brackets(filename):
-    return re.sub(r'\s?\[.*?\]\s?', '', filename)
+        if match:
+            title = match.group(1)
+            year = match.group(3)
+            season_start = match.group(5)
+            episode = match.group(7)
+            season_end = match.group(8)
 
-def remove_series_tags(filename):
-    return re.sub(r'(?i)((\((miniserie|serie|documental).*?\)|(miniserie|serie|documental)((de )?tv)?))', '', filename)
+            if episode:
+                series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
+            else:
+                if season_end:
+                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+                else:
+                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
+        else:
+            logger.info(f'Could not parse series info: {original_file_name}')
 
-def remove_season_and_episode(filename):
-    return re.sub(r'(?i)(\s?(\-\s)?)?s\d+(e\d+)?.*', '', filename)
+    elif 'hd-privatehd' in tracker:
 
-def get_season_episode(filename):
-    match = re.search(r'(?i)s\d+(\-(s)?\d+)*(e\d+)?', filename)
-    if match:
-        return match[0]
-    return None
+        match = re.search(r'^(.*?)( \((\d{4})\))?( [Ss](\d{2})([Ee](\d{2}))?(?:-[Ss](\d{2}))?)?.*', original_file_name)
+        if match:
+            title = match.group(1)
+            year = match.group(3)
+            season_start = match.group(5)
+            episode = match.group(7)
+            season_end = match.group(8)
+            if episode:
+                series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nEpisode: {episode}\nType: Single Episode'
+            else:
+                if season_end:
+                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}-{season_end}\nType: Multiple Seasons'
+                else:
+                    series_telegram_message = f'Title: {title}\nYear: {year}\nSeason: {season_start}\nType: Full Season'
+        else:
+            logger.info(f'Could not parse series info: {original_file_name}')
 
-def get_year(filename):
-    match = re.search(r'\(?(20|19)\d{2}\)?', filename)
-    if match:
-        return match[0]
-    return None
+    return series_telegram_message
 
-def replace_multiple_spaces(filename):
-    return re.sub(r'\s{2,}', ' ', filename)
+def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
 
-def get_series_name_olimpo_format(original_file_name, logger):
+    series_telegram_message = extract_episode_season_numbers(original_file_name=original_file_name, tracker=tracker, logger=logger)
 
-    file_with_no_brackets = remove_brackets(original_file_name)
-    logger.debug(f'file_with_no_brackets: {file_with_no_brackets}')
+    folder_name_cleaned = clean_series_folder_name(folder_name=original_file_name, tracker=tracker, logger=logger)
+    logger.debug(f'folder_name_cleaned {folder_name_cleaned}')
 
-    file_with_no_series_tags = remove_series_tags(file_with_no_brackets)
-    logger.debug(f'file_with_no_series_tags: {file_with_no_series_tags}')
-
-    file_with_no_season = remove_season_and_episode(file_with_no_series_tags)
-    logger.debug(f'file_with_no_season: {file_with_no_season}')
-
-    season_episode = get_season_episode(file_with_no_series_tags)
-    logger.debug(f'season_episode: {season_episode}')
-
-    year = get_year(file_with_no_season)
-    logger.debug(f'year: {year}')
-
-    folder_name = file_with_no_season
-    logger.debug(f'folder_name: {folder_name}')
-
-    if year:
-        folder_name =  re.sub(year + '.*', '', file_with_no_season)
-        logger.debug(f'folder_name: {folder_name}')
-
-        folder_name = f'{folder_name.strip()} {year}'
-        logger.debug(f'folder_name: {folder_name}')
-
-    folder_name = replace_multiple_spaces(folder_name)
-    logger.debug(f'folder_name: {folder_name}')
-
-    name_trimmed = f'{folder_name} {season_episode}.mkv'
-    logger.debug(f'name_trimmed: {name_trimmed}')
-
-    return folder_name
-
-
-def determine_file_structure(original_file_name, tracker, logger):
-    if 'hd-olimpo' in tracker.lower():
-        return get_series_name_olimpo_format(original_file_name, logger) if 'S' in original_file_name else get_name_from_parenthesis_and_bracket_format(original_file_name, logger)
-    elif 'privatehd' in tracker.lower():
-        return get_name_from_dot_separated_format(original_file_name, logger)
-
-def handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, is_series):
-    logger.debug(f'Input variables for handle_file original_file_name: {original_file_name}, tracker: {tracker}, source_path: {source_path}, hash_folder_path: {hash_folder_path}, logger: {logger}, is_series:{is_series}')
-
-    folder_name = determine_file_structure(original_file_name, tracker, logger)
-
-    folder_to_scrap_path = f'{hash_folder_path}/{folder_name}'
+    folder_to_scrap_path = os.path.join(hash_folder_path, folder_name_cleaned)
     logger.debug(f'folder_to_scrap_path: {folder_to_scrap_path}')
 
     os.makedirs(folder_to_scrap_path, exist_ok=True)
-    file_name = f'{folder_name}.mkv'
+
     if os.path.isdir(source_path):
-        for file in glob.glob(f"{source_path}/*.mkv"):
-
-            if is_series: #revisar estos casos
-                file_name = os.path.split(file)[1]
-                file_name = re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv', file_name)
-                logger.debug(f'file_name: {file_name}')
-
-            shutil.copy(file, f'{hash_folder_path}/{folder_name}/{file_name}')
-            logger.debug(f'shutil.copy({file}, {hash_folder_path}/{folder_name}/{file_name})')
-
+        mkv_files = glob.glob(os.path.join(source_path, '**', '*.mkv'), recursive=True)
+        for file in mkv_files:
+            base_name = os.path.basename(file)
+            episode_name = clean_series_episode_name(episode_name=base_name, tracker=tracker, logger=logger)
+            shutil.copy(file, os.path.join(folder_to_scrap_path, episode_name))
     else:
-        if is_series:
-            file_name = re.sub(r'\b(?!.*(\s?(\-\s)?)?(?i)s\d+(e\d+)?).*\.mkv', '.mkv', file_name)
-        shutil.copy(source_path, f'{hash_folder_path}/{folder_name}/{file_name}')
-        logger.debug(f'shutil.copy({source_path}, {hash_folder_path}/{folder_name}/{file_name}')
+        episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
+        shutil.copy(source_path, os.path.join(folder_to_scrap_path, episode_name))
 
-def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
-    handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, True)
+    return series_telegram_message
 
 def handle_movies(original_file_name, tracker, source_path, hash_folder_path, logger):
-    handle_file(original_file_name, tracker, source_path, hash_folder_path, logger, False)
+
+    file_name, file_extension = os.path.splitext(original_file_name)
+
+    folder_name_cleaned = clean_movies_folder_name(file_name=original_file_name, tracker=tracker, logger=logger)
+    logger.debug(f'folder_name_cleaned {folder_name_cleaned}')
+
+    folder_to_scrap_path = os.path.join(hash_folder_path, folder_name_cleaned)
+    logger.debug(f'folder_to_scrap_path: {folder_to_scrap_path}')
+
+    os.makedirs(folder_to_scrap_path, exist_ok=True)
+
+    shutil.copy(source_path, os.path.join(folder_to_scrap_path, f'{folder_name_cleaned}{file_extension}'))
 
 def rename_and_move(original_file_name, hash_folder_path, source_path, category, tracker, logger):
     # This function determines whether the file is a series or a movie and calls the appropriate function to handle it.
-
+    series_telegram_message = None
     if 'series' in category.lower():
 
-         handle_series(original_file_name=original_file_name,
-                               tracker=tracker,
+         series_telegram_message = handle_series(original_file_name=original_file_name,
+                               tracker=tracker.lower(),
                                source_path=source_path,
                                hash_folder_path=hash_folder_path, logger=logger )
     else:
@@ -180,3 +187,4 @@ def rename_and_move(original_file_name, hash_folder_path, source_path, category,
                                tracker=tracker,
                                source_path=source_path,
                                hash_folder_path=hash_folder_path, logger=logger)
+    return series_telegram_message
