@@ -166,7 +166,7 @@ def clean_series_folder_name(folder_name, tracker, logger):
         if year_match:
             year = re.sub(r"\(|\)", "", year_match.group(1))
 
-        logger.debug(f'year: {year}')
+        #logger.debug(f'year: {year}')
 
         folder_name_cleaned = f'{title} ({year})' if year else title
 
