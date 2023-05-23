@@ -245,7 +245,7 @@ def main(args):
 
         send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
 
-        #perform_housekeeping(hash_folder_path=hash_folder_path, logger=logger)
+        perform_housekeeping(hash_folder_path=hash_folder_path, logger=logger)
 
     except Exception as e:
 

@@ -12,6 +12,7 @@ import shutil
 
 def scrap(hash_folder_path, hash_folder, posters_folder_path, downloads_mount_point, tmm_configuration_path, category, logger):
 
+    i = 0
     if 'series' in category:
         tmm_command = 'tvshow'
     else:
@@ -23,15 +24,20 @@ def scrap(hash_folder_path, hash_folder, posters_folder_path, downloads_mount_po
     last_two_folders = os.path.join(*hash_folder_path.split(os.sep)[-2:])
 
     realworld_download_path = os.path.join(downloads_mount_point,  last_two_folders)
+    for i in range(0,3):
+        logger.debug(f'Trying {i} attempt')
 
-    logger.debug(f'Docker command: docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
+        logger.debug(f'Docker command: docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
 
-    os.system(f'docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
+        os.system(f'docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
 
-    poster_location = os.path.join(hash_folder_path, '*', '*poster*')
-    logger.debug(f'poster location: {poster_location}')
-    poster_path = glob.glob(poster_location)
+        poster_location = os.path.join(hash_folder_path, '*', '*poster*')
+        poster_path = glob.glob(poster_location)
+        if poster_path:
+            break
+
     logger.debug(f'poster_path result {poster_path}')
+
     if poster_path:
         path = poster_path[0]
         extension = os.path.splitext(path)[1]
