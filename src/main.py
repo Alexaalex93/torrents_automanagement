@@ -227,19 +227,23 @@ def main(args):
 
         logger.debug('Starting the process')
 
-        hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=args.source_path, category=args.category, original_file_name=original_file_name, logger=logger)
+        if args.category:
+            hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=args.source_path, category=args.category, original_file_name=original_file_name, logger=logger)
 
-        logger.debug(f'Output variables from prepare_temporary_folder() ---> hash_folder_path: {hash_folder_path}, posters_folder_path: {posters_folder_path}, hash_folder: {hash_folder}')
+            logger.debug(f'Output variables from prepare_temporary_folder() ---> hash_folder_path: {hash_folder_path}, posters_folder_path: {posters_folder_path}, hash_folder: {hash_folder}')
 
-        poster_path, series_telegram_message = process_downloaded_file(args=args, configuration=configuration, hash_folder_path=hash_folder_path, posters_folder_path=posters_folder_path, hash_folder=hash_folder, logger=logger)
+            poster_path, series_telegram_message = process_downloaded_file(args=args, configuration=configuration, hash_folder_path=hash_folder_path, posters_folder_path=posters_folder_path, hash_folder=hash_folder, logger=logger)
 
-        logger.debug(f'Output variables from process_downloaded_file() ---> poster_path: {poster_path}. series_telegram_message: {series_telegram_message}')
+            logger.debug(f'Output variables from process_downloaded_file() ---> poster_path: {poster_path}. series_telegram_message: {series_telegram_message}')
 
-        title, resolution, folder_to_upload_path = create_title(hash_folder_path=hash_folder_path, category=args.category, logger=logger)
+            title, resolution, folder_to_upload_path = create_title(hash_folder_path=hash_folder_path, category=args.category, logger=logger)
 
-        title = series_telegram_message if ('series' in args.category and series_telegram_message is not None) else title
+            title = series_telegram_message if ('series' in args.category and series_telegram_message is not None) else title
 
-        logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
+            logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
+        else:
+            args.category = 'upload'
+            folder_to_upload_path = args.source_path
 
         upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
