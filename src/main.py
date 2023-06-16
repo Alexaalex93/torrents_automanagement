@@ -242,7 +242,7 @@ def main(args):
 
             logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
         else:
-            args.category = 'upload'
+            args.category = 'subidas'
             folder_to_upload_path = args.source_path
 
         upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
