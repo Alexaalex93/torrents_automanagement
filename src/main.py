@@ -227,7 +227,7 @@ def main(args):
 
         logger.debug('Starting the process')
 
-        if args.category:
+        if args.category or args.category !='upload':
             hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=args.source_path, category=args.category, original_file_name=original_file_name, logger=logger)
 
             logger.debug(f'Output variables from prepare_temporary_folder() ---> hash_folder_path: {hash_folder_path}, posters_folder_path: {posters_folder_path}, hash_folder: {hash_folder}')
