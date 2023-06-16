@@ -242,14 +242,14 @@ def main(args):
 
             logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
         else:
-            args.category = 'subidas'
+            args.category = 'upload'
             folder_to_upload_path = args.source_path
 
         upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
-        send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
-
-        perform_housekeeping(hash_folder_path=hash_folder_path, logger=logger)
+        if args.category != 'upload':
+            send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
+            perform_housekeeping(hash_folder_path=hash_folder_path, logger=logger)
 
     except Exception as e:
 
