@@ -166,13 +166,13 @@ def create_title(hash_folder_path, category, logger):
 
 # Upload the file to Google Drive
 @log_function_call
-def upload_file_to_drive(configuration, folder_to_upload_path, category, logger):
+def upload_file_to_drive(folder_to_upload_path, category, logger):
 
     destination_folder_name = os.path.split(folder_to_upload_path)[-1]
 
     try:
         logger.info('Starting upload to Google Drive')
-        upload_to_drive(folder_to_upload_path=folder_to_upload_path, destination_folder_name=destination_folder_name, rclone_path=configuration['rclone_path'], remote_name=category, logger=logger)
+        upload_to_drive(folder_to_upload_path=folder_to_upload_path, destination_folder_name=destination_folder_name, remote_name=category, logger=logger)
         logger.info('Upload finished')
 
     except Exception as e:
@@ -245,7 +245,7 @@ def main(args):
             args.category = 'upload'
             folder_to_upload_path = args.source_path
 
-        upload_file_to_drive(configuration=configuration, folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
+        upload_file_to_drive(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
         if args.category != 'upload':
             send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
