@@ -208,7 +208,7 @@ def clean_movies_folder_name(file_name, tracker, logger):
             folder_name_cleaned = f'{title} ({year})' if year else title
         else:
             logger.info(f'Could not parse movie info: {file_name}')
-    elif 'hd-privatehd' in tracker:
+    elif 'privatehd' in tracker:
         logger.debug('Inside privatehd condition')
 
         match = re.search(r'^(.*?)(\d{4}).*', file_name)
