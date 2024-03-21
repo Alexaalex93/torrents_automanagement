@@ -289,7 +289,7 @@ def main(args):
         else:
             args.category = 'upload'
             folder_to_upload_path = args.source_path
-        if args.upload_to_google_drive:
+        if args.upload_to_google_drive == 'True':
             upload_file_to_drive(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
         else:
             move_to_local_folder(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
@@ -312,7 +312,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--source_path", help = "Path of the download", required=True)
     parser.add_argument("-c", "--category", help = "Torrent category", required=True)
     parser.add_argument("-t", "--tracker", help = "Torrent tracker", required=True)
-    parser.add_argument("-u", "--upload_to_google_drive", help = "Upload to google drive", required=False, default=False)
+    parser.add_argument("-u", "--upload_to_google_drive", type=str, choices=["True", "False"], default="False")
 
     args = parser.parse_args()
     main(args)
