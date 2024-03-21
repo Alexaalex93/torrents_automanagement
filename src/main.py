@@ -181,6 +181,50 @@ def upload_file_to_drive(folder_to_upload_path, category, logger):
         logger.error(tb)
         sys.exit(1)
 
+# Move to local folder
+@log_function_call
+def move_to_local_folder(folder_to_upload_path, category, logger):
+
+    #destination_folder_name = os.path.split(folder_to_upload_path)[-1]
+
+    try:
+        logger.info('Starting to move')
+
+        final_path = os.path.join('/multimedia', 'local',  category)
+
+        for raiz, carpetas, archivos in os.walk(folder_to_upload_path, topdown=True):
+            # Determinar el path relativo de la raíz actual al path de origen para mantener la estructura
+            rel_path = os.path.relpath(raiz, folder_to_upload_path)
+            destino_raiz = os.path.join(final_path, rel_path)
+
+            # Crear carpetas en el destino si no existen
+            os.makedirs(destino_raiz, exist_ok=True)
+
+            # Mover cada archivo al destino
+            for archivo in archivos:
+                origen_archivo = os.path.join(raiz, archivo)
+                destino_archivo = os.path.join(destino_raiz, archivo)
+
+                # Si el archivo ya existe en el destino, no se sobrescribe.
+                if not os.path.exists(destino_archivo):
+                    shutil.move(origen_archivo, destino_archivo)
+                else:
+                   logger.info(f"El archivo {destino_archivo} ya existe y no se ha movido.")
+
+            # Si la carpeta está vacía al final del proceso, puedes optar por eliminarla
+            # Esto es opcional y puede comentarse si prefieres mantener las carpetas originales vacías
+            #if not os.listdir(raiz):
+            #os.rmdir(raiz)
+
+
+        logger.info('Moved finished')
+
+    except Exception as e:
+        logger.error(f'Error while uploading the file: {e}')
+        tb = traceback.format_exc()
+        logger.error(tb)
+        sys.exit(1)
+
 # Perform cleaning operations
 @log_function_call
 def perform_housekeeping(hash_folder_path, logger):
@@ -227,6 +271,7 @@ def main(args):
 
         logger.debug('Starting the process')
 
+
         if args.category or args.category !='upload':
             hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=args.source_path, category=args.category, original_file_name=original_file_name, logger=logger)
 
@@ -244,8 +289,10 @@ def main(args):
         else:
             args.category = 'upload'
             folder_to_upload_path = args.source_path
-
-        upload_file_to_drive(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
+        if args.upload_to_google_drive:
+            upload_file_to_drive(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
+        else:
+            shutil.move()
 
         if args.category != 'upload':
             send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
@@ -265,6 +312,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--source_path", help = "Path of the download", required=True)
     parser.add_argument("-c", "--category", help = "Torrent category", required=True)
     parser.add_argument("-t", "--tracker", help = "Torrent tracker", required=True)
+    parser.add_argument("-u", "--upload_to_google_drive", help = "Upload to google drive", required=False, default=False)
 
     args = parser.parse_args()
     main(args)
