@@ -185,12 +185,12 @@ def upload_file_to_drive(folder_to_upload_path, category, logger):
 @log_function_call
 def move_to_local_folder(folder_to_upload_path, category, logger):
 
-    #destination_folder_name = os.path.split(folder_to_upload_path)[-1]
+    destination_folder_name = os.path.split(folder_to_upload_path)[-1]
 
     try:
         logger.info('Starting to move')
 
-        final_path = os.path.join('/multimedia', 'local',  category)
+        final_path = os.path.join('/multimedia', 'local',  category, destination_folder_name)
 
         for raiz, carpetas, archivos in os.walk(folder_to_upload_path, topdown=True):
             # Determinar el path relativo de la raíz actual al path de origen para mantener la estructura
