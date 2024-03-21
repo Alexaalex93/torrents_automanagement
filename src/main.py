@@ -292,7 +292,7 @@ def main(args):
         if args.upload_to_google_drive:
             upload_file_to_drive(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
         else:
-            shutil.move()
+            move_to_local_folder(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
         if args.category != 'upload':
             send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
