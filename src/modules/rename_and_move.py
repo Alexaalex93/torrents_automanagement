@@ -16,7 +16,7 @@ import os
 import shutil
 import re
 
-def create_symlink(file_source, destinatio, loggern):
+def create_symlink(file_source, destination, logger):
     if os.path.exists(destination):
         os.remove(destination)
     os.symlink(file_source, destination)
