@@ -18,6 +18,7 @@ import re
 import sys
 import glob
 import traceback
+import subprocess
 
 import logging
 import functools

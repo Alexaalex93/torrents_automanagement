@@ -16,6 +16,13 @@ import os
 import shutil
 import re
 
+def create_symlink(file_source, destination):
+    if os.path.exists(destination):
+        os.remove(destination)
+    os.symlink(file_source, destination)
+    print(f"Enlace simbólico creado: {file_source} -> {destination}")
+
+
 def extract_season_range(season_episode):
     pattern = r"(?:s|t|season|temporada|temp)\d+"
     matches = re.findall(pattern, season_episode, re.IGNORECASE)
@@ -244,7 +251,6 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
         source_path_escaped = escape_glob_pattern(source_path)
         files_path = os.path.join(source_path_escaped, '**', '*.mkv')
         logger.debug(f'files_path: {files_path}')
-        glob.glob('/downloads/series_fhd_webdl/Holding\ \(2022\)\ S01\ \[MiniSerie\]\[FILMN\ WEB\-DL\ 1080p\ AVC\ ES\-EN\ AAC\ 5\.1\-2\.0\ Subs\]\[HDO\]/**/*.mkv', recursive=True)
 
         mkv_files = glob.glob(files_path, recursive=True)
         logger.debug(f'mkv_files: {mkv_files}')
@@ -252,7 +258,9 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
             base_name = os.path.basename(file)
             episode_name = clean_series_episode_name(episode_name=base_name, tracker=tracker, logger=logger)
             episode_destination = os.path.join(folder_to_scrap_path, episode_name)
-            shutil.copy(file, episode_destination)
+
+            #shutil.copy(file, episode_destination)
+            create_symlink(file, episode_destination)
             logger.debug(f'Copied {file} to {episode_destination}')
 
     else:
@@ -277,8 +285,11 @@ def handle_movies(original_file_name, tracker, source_path, hash_folder_path, lo
 
     movie_destination = os.path.join(folder_to_scrap_path, f'{folder_name_cleaned}{file_extension}')
 
-    shutil.copy(source_path, movie_destination)
+    create_symlink(source_path, movie_destination)
+
+    #shutil.copy(source_path, movie_destination)
     logger.debug(f'Copied {source_path} to {movie_destination}')
+
 
 
 def rename_and_move(original_file_name, hash_folder_path, source_path, category, tracker, logger):
