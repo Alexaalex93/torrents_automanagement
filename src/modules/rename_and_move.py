@@ -272,7 +272,7 @@ def handle_series(original_file_name, tracker, source_path, downloads_mount_poin
         episode_destination= os.path.join(folder_to_scrap_path, episode_name)
 
         full_real_world_file_path = os.path.join(head_downloads_mount_point, source_path)
-
+        
         create_symlink(full_real_world_file_path, episode_destination, logger)
         #shutil.copy(source_path, episode_destination)
         logger.debug(f'Copied {source_path} to {episode_destination}')
@@ -292,10 +292,13 @@ def handle_movies(original_file_name, tracker, source_path, downloads_mount_poin
     os.makedirs(folder_to_scrap_path, exist_ok=True)
 
     movie_destination = os.path.join(folder_to_scrap_path, f'{folder_name_cleaned}{file_extension}')
+    logger.debug(f'movie_destination {movie_destination}')
 
     head_downloads_mount_point, tail_downloads_mount_point = os.path.split(downloads_mount_point)
-    
+    logger.debug(f'head_downloads_mount_point {head_downloads_mount_point}')
+
     full_real_world_file_path = os.path.join(head_downloads_mount_point, source_path)
+    logger.debug(f'full_real_world_file_path {full_real_world_file_path}')
 
     create_symlink(full_real_world_file_path, movie_destination, logger)
 
