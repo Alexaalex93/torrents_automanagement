@@ -235,7 +235,7 @@ def escape_glob_pattern(pattern):
     escaped_pattern = re.sub(r'\]\]', r'[]]', escaped_pattern)
     return escaped_pattern
 
-def handle_series(original_file_name, tracker, source_path, hash_folder_path, logger):
+def handle_series(original_file_name, tracker, source_path, downloads_mount_point, hash_folder_path, logger):
 
     folder_name_cleaned, series_telegram_message = clean_series_folder_name(folder_name=original_file_name, tracker=tracker, logger=logger)
     logger.debug(f'folder_name_cleaned {folder_name_cleaned}')
@@ -245,6 +245,8 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
 
 
     os.makedirs(folder_to_scrap_path, exist_ok=True)
+    
+    head_downloads_mount_point, tail_downloads_mount_point = os.path.split(downloads_mount_point)
 
     if os.path.isdir(source_path):
 
@@ -260,19 +262,24 @@ def handle_series(original_file_name, tracker, source_path, hash_folder_path, lo
             episode_destination = os.path.join(folder_to_scrap_path, episode_name)
 
             #shutil.copy(file, episode_destination)
-            create_symlink(file, episode_destination, logger)
+            full_real_world_file_path = os.path.join(head_downloads_mount_point, file)
+
+            create_symlink(full_real_world_file_path, episode_destination, logger)
             logger.debug(f'Copied {file} to {episode_destination}')
 
     else:
         episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
         episode_destination= os.path.join(folder_to_scrap_path, episode_name)
-        create_symlink(source_path, episode_destination, logger)
+
+        full_real_world_file_path = os.path.join(head_downloads_mount_point, source_path)
+
+        create_symlink(full_real_world_file_path, episode_destination, logger)
         #shutil.copy(source_path, episode_destination)
         logger.debug(f'Copied {source_path} to {episode_destination}')
 
     return series_telegram_message
 
-def handle_movies(original_file_name, tracker, source_path, hash_folder_path, logger):
+def handle_movies(original_file_name, tracker, source_path, downloads_mount_point, hash_folder_path, logger):
 
     file_name, file_extension = os.path.splitext(original_file_name)
 
@@ -286,26 +293,30 @@ def handle_movies(original_file_name, tracker, source_path, hash_folder_path, lo
 
     movie_destination = os.path.join(folder_to_scrap_path, f'{folder_name_cleaned}{file_extension}')
 
-    create_symlink(source_path, movie_destination, logger)
+    head_downloads_mount_point, tail_downloads_mount_point = os.path.split(downloads_mount_point)
+    
+    full_real_world_file_path = os.path.join(head_downloads_mount_point, source_path)
+
+    create_symlink(full_real_world_file_path, movie_destination, logger)
 
     #shutil.copy(source_path, movie_destination)
     logger.debug(f'Copied {source_path} to {movie_destination}')
 
 
 
-def rename_and_move(original_file_name, hash_folder_path, source_path, category, tracker, logger):
+def rename_and_move(original_file_name, hash_folder_path, downloads_mount_point, source_path, category, tracker, logger):
     # This function determines whether the file is a series or a movie and calls the appropriate function to handle it.
     series_telegram_message = None
     if 'series' in category.lower():
 
          series_telegram_message = handle_series(original_file_name=original_file_name,
                                tracker=tracker.lower(),
-                               source_path=source_path,
+                               source_path=source_path, downloads_mount_point=downloads_mount_point, 
                                hash_folder_path=hash_folder_path, logger=logger )
     else:
 
         handle_movies(original_file_name=original_file_name,
                                tracker=tracker,
-                               source_path=source_path,
+                               source_path=source_path, downloads_mount_point=downloads_mount_point,
                                hash_folder_path=hash_folder_path, logger=logger)
     return series_telegram_message

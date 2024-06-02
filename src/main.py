@@ -128,7 +128,7 @@ def process_downloaded_file(args, configuration, hash_folder_path, posters_folde
 
         logger.info('Moving file to temporary folder')
 
-        series_telegram_message = rename_and_move(original_file_name=original_file_name, hash_folder_path=hash_folder_path, source_path=args.source_path, category=args.category, tracker=args.tracker, logger=logger)
+        series_telegram_message = rename_and_move(original_file_name=original_file_name, hash_folder_path=hash_folder_path, downloads_mount_point=configuration['downloads_mount_point'], source_path=args.source_path, category=args.category, tracker=args.tracker, logger=logger)
 
         logger.info('File moved to temporary folder')
 
