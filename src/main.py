@@ -159,7 +159,7 @@ def create_title(hash_folder_path, category, logger):
     folder_to_upload_path = glob.glob(os.path.join(hash_folder_path, '*'))[0]
     logger.debug(f'Glob result of os.path.join(hash_folder_path, *) {folder_to_upload_path}')
     folder_name = os.path.split(folder_to_upload_path)[-1]
-    title = re.sub('\s?\{tmdb-\d+\}', '', folder_name)
+    title = re.sub(r'\s?\{tmdb-\d+\}', '', folder_name)
 
     resolution = '1080p' if category.split('_')[1] == 'fhd' else '2160p'
 

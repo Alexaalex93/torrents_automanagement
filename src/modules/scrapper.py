@@ -27,7 +27,7 @@ def scrap(hash_folder_path, hash_folder, posters_folder_path, downloads_mount_po
     for i in range(0,3):
         logger.debug(f'Trying {i} attempt')
 
-        logger.debug(f'Docker command: docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
+        logger.debug(f'Docker command: docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/opt/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
 
         os.system(f'docker run --rm -e CONTENT_TYPE="{tmm_command}" -v {realworld_download_path}:/{file_type} -v {tmm_configuration_path}:/opt/tinyMediaManager/data alexaalex93/tinymediamanager_cli_ubuntu')
 
