@@ -18,7 +18,6 @@ import re
 import sys
 import glob
 import traceback
-import subprocess
 
 import logging
 import functools
@@ -267,6 +266,7 @@ def main(args):
     logger.debug('####################################################################################################')
 
     send_message = SendMessage(bot_configuration_path, templates_path)
+    source_path = args.source_path.encode('utf-8').decode('utf-8')
 
     try:
 
@@ -274,7 +274,7 @@ def main(args):
 
 
         if args.category or args.category !='upload':
-            hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=args.source_path, category=args.category, original_file_name=original_file_name, logger=logger)
+            hash_folder_path, hash_folder, posters_folder_path = prepare_temporary_folder(source_path=source_path, category=args.category, original_file_name=original_file_name, logger=logger)
 
             logger.debug(f'Output variables from prepare_temporary_folder() ---> hash_folder_path: {hash_folder_path}, posters_folder_path: {posters_folder_path}, hash_folder: {hash_folder}')
 
@@ -289,7 +289,7 @@ def main(args):
             logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
         else:
             args.category = 'upload'
-            folder_to_upload_path = args.source_path
+            folder_to_upload_path = source_path
         if args.upload_to_google_drive == 'True':
             upload_file_to_drive(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
         else:
