@@ -246,12 +246,7 @@ def handle_series(original_file_name, tracker, source_path, downloads_mount_poin
 
     os.makedirs(folder_to_scrap_path, exist_ok=True)
     
-    relative_source_path = os.path.relpath(source_path, "/downloads")
-    logger.debug(f'relative_source_path {relative_source_path}')
-
-    full_real_world_file_path = os.path.join(downloads_mount_point, relative_source_path)
-    logger.debug(f'full_real_world_file_path {full_real_world_file_path}')
-
+    
     if os.path.isdir(source_path):
         logger.debug('THE SERIES INPUT IS A DIRECTORY')
         source_path_escaped = escape_glob_pattern(source_path)
@@ -261,7 +256,14 @@ def handle_series(original_file_name, tracker, source_path, downloads_mount_poin
         mkv_files = glob.glob(files_path, recursive=True)
         logger.debug(f'mkv_files: {mkv_files}')
         for file in mkv_files:
+            
             logger.debug(f'file {file}')
+            
+            relative_source_path = os.path.relpath(file, "/downloads")
+            logger.debug(f'relative_source_path {relative_source_path}')
+
+            full_real_world_file_path = os.path.join(downloads_mount_point, relative_source_path)
+            logger.debug(f'full_real_world_file_path {full_real_world_file_path}')
 
             base_name = os.path.basename(file)
             episode_name = clean_series_episode_name(episode_name=base_name, tracker=tracker, logger=logger)
@@ -269,12 +271,17 @@ def handle_series(original_file_name, tracker, source_path, downloads_mount_poin
             logger.debug(f'episode_destination {episode_destination}')
 
             #shutil.copy(file, episode_destination)
-            episode_full_real_world_file_path = os.path.join(full_real_world_file_path, episode_name)
-            create_symlink(episode_full_real_world_file_path, episode_destination, logger)
+            create_symlink(full_real_world_file_path, episode_destination, logger)
             #logger.debug(f'Copied {file} to {episode_destination}')
 
     else:
         logger.debug('THE SERIES INPUT IS A SINGLE FILE')
+        relative_source_path = os.path.relpath(source_path, "/downloads")
+        logger.debug(f'relative_source_path {relative_source_path}')
+
+        full_real_world_file_path = os.path.join(downloads_mount_point, relative_source_path)
+        logger.debug(f'full_real_world_file_path {full_real_world_file_path}')
+
 
         episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
         episode_destination= os.path.join(folder_to_scrap_path, episode_name)
