@@ -258,25 +258,31 @@ def handle_series(original_file_name, tracker, source_path, downloads_mount_poin
         mkv_files = glob.glob(files_path, recursive=True)
         logger.debug(f'mkv_files: {mkv_files}')
         for file in mkv_files:
+            logger.debug(f'file {file}')
+
             base_name = os.path.basename(file)
             episode_name = clean_series_episode_name(episode_name=base_name, tracker=tracker, logger=logger)
             episode_destination = os.path.join(folder_to_scrap_path, episode_name)
+            logger.debug(f'episode_destination {episode_destination}')
 
             #shutil.copy(file, episode_destination)
             full_real_world_file_path = os.path.join(downloads_mount_point, file)
+            logger.debug(f'full_real_world_file_path {full_real_world_file_path}')
 
             create_symlink(full_real_world_file_path, episode_destination, logger)
-            logger.debug(f'Copied {file} to {episode_destination}')
+            #logger.debug(f'Copied {file} to {episode_destination}')
 
     else:
         episode_name = clean_series_episode_name(episode_name=original_file_name, tracker=tracker, logger=logger)
         episode_destination= os.path.join(folder_to_scrap_path, episode_name)
+        logger.debug(f'episode_destination {episode_destination}')
 
         full_real_world_file_path = os.path.join(downloads_mount_point, source_path)
+        logger.debug(f'full_real_world_file_path {full_real_world_file_path}')
 
         create_symlink(full_real_world_file_path, episode_destination, logger)
         #shutil.copy(source_path, episode_destination)
-        logger.debug(f'Copied {source_path} to {episode_destination}')
+       # logger.debug(f'Copied {source_path} to {episode_destination}')
 
     return series_telegram_message
 
@@ -306,7 +312,7 @@ def handle_movies(original_file_name, tracker, source_path, downloads_mount_poin
     create_symlink(full_real_world_file_path, movie_destination, logger)
 
     #shutil.copy(source_path, movie_destination)
-    logger.debug(f'Copied {source_path} to {movie_destination}')
+    #logger.debug(f'Copied {source_path} to {movie_destination}')
 
 
 
