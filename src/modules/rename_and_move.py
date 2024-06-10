@@ -269,8 +269,8 @@ def handle_series(original_file_name, tracker, source_path, downloads_mount_poin
             logger.debug(f'episode_destination {episode_destination}')
 
             #shutil.copy(file, episode_destination)
-
-            create_symlink(full_real_world_file_path, episode_destination, logger)
+            episode_full_real_world_file_path = os.path.join(full_real_world_file_path, episode_name)
+            create_symlink(episode_full_real_world_file_path, episode_destination, logger)
             #logger.debug(f'Copied {file} to {episode_destination}')
 
     else:
