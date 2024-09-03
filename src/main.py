@@ -186,7 +186,10 @@ def upload_file_to_drive(folder_to_upload_path, category, logger):
 def move_to_local_folder(folder_to_upload_path, category, logger):
 
     destination_folder_name = os.path.split(folder_to_upload_path)[-1]
-
+    if 'series' in category:
+        category = 'series'
+    else:
+        category = 'peliculas'
     try:
         logger.info('Starting to move')
 
