@@ -190,10 +190,11 @@ def move_to_local_folder(folder_to_upload_path, category, logger):
         category = 'series'
     else:
         category = 'peliculas'
+
     try:
         logger.info('Starting to move')
 
-        final_path = os.path.join('/multimedia', 'local',  category, destination_folder_name)
+        final_path = os.path.join('/multimedia', 'local', category, destination_folder_name)
 
         for raiz, carpetas, archivos in os.walk(folder_to_upload_path, topdown=True):
             # Determinar el path relativo de la raíz actual al path de origen para mantener la estructura
@@ -203,30 +204,23 @@ def move_to_local_folder(folder_to_upload_path, category, logger):
             # Crear carpetas en el destino si no existen
             os.makedirs(destino_raiz, exist_ok=True)
 
-            # Mover cada archivo al destino
+            # Mover cada archivo al destino, sobrescribiendo si ya existe
             for archivo in archivos:
                 origen_archivo = os.path.join(raiz, archivo)
                 destino_archivo = os.path.join(destino_raiz, archivo)
 
-                # Si el archivo ya existe en el destino, no se sobrescribe.
-                if not os.path.exists(destino_archivo):
-                    shutil.move(origen_archivo, destino_archivo)
-                else:
-                   logger.info(f"El archivo {destino_archivo} ya existe y no se ha movido.")
+                # Sobrescribir el archivo si ya existe
+                shutil.move(origen_archivo, destino_archivo)
+                logger.info(f"El archivo {origen_archivo} ha sido movido a {destino_archivo}.")
 
-            # Si la carpeta está vacía al final del proceso, puedes optar por eliminarla
-            # Esto es opcional y puede comentarse si prefieres mantener las carpetas originales vacías
-            #if not os.listdir(raiz):
-            #os.rmdir(raiz)
-
-
-        logger.info('Moved finished')
+        logger.info('Move finished')
 
     except Exception as e:
         logger.error(f'Error while uploading the file: {e}')
         tb = traceback.format_exc()
         logger.error(tb)
         sys.exit(1)
+
 
 # Perform cleaning operations
 @log_function_call
