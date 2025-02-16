@@ -208,6 +208,8 @@ def move_to_local_folder(folder_to_upload_path, category, logger):
             for archivo in archivos:
                 origen_archivo = os.path.join(raiz, archivo)
                 destino_archivo = os.path.join(destino_raiz, archivo)
+                
+                logger.info(f"Archivo destino: {destino_archivo}")
 
                 # Sobrescribir el archivo si ya existe
                 if os.path.isfile(destino_archivo):
