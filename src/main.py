@@ -199,7 +199,11 @@ def move_to_local_folder(folder_to_upload_path, category, logger):
         for raiz, carpetas, archivos in os.walk(folder_to_upload_path, topdown=True):
             # Determinar el path relativo de la raíz actual al path de origen para mantener la estructura
             rel_path = os.path.relpath(raiz, folder_to_upload_path)
-            destino_raiz = os.path.join(final_path, rel_path)
+            if rel_path == ".":
+                destino_raiz = final_path  # Evita que se añada "/."
+            else:
+                destino_raiz = os.path.join(final_path, rel_path)
+
 
             # Crear carpetas en el destino si no existen
             os.makedirs(destino_raiz, exist_ok=True)
