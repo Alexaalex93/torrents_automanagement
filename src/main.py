@@ -212,7 +212,8 @@ def move_to_local_folder(folder_to_upload_path, category, logger):
                 # Sobrescribir el archivo si ya existe
                 if os.path.isfile(destino_archivo):
                     os.remove(destino_archivo)
-                    
+                    logger.info(f"Archivo anterior eliminado: {destino_archivo}")
+
                 # Copiamos el archivo manteniendo metadatos
                 shutil.copy2(origen_archivo, destino_archivo)
                 
