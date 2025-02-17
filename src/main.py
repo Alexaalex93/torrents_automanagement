@@ -216,19 +216,17 @@ def move_to_local_folder(folder_to_upload_path, category, logger):
                 logger.info(f"Archivo destino: {destino_archivo}")
 
                 # Sobrescribir el archivo si ya existe
-                if os.path.isfile(destino_archivo):
+                if os.path.islink(destino_archivo):
                     logger.info(f"Eliminando archivo anterior: {destino_archivo}")
                     os.remove(destino_archivo)
 
-                # Copiamos el archivo manteniendo metadatos
-                logger.info(f"Copiando archivo: {origen_archivo} -> {destino_archivo}")
+                # moviendo el archivo
+                logger.info(f"Moviendo archivo: {origen_archivo} -> {destino_archivo}")
 
-                shutil.copy2(origen_archivo, destino_archivo)
+                shutil.move(origen_archivo, destino_archivo)
                 
-                logger.info(f"Eliminando archivo original: {origen_archivo}")
 
-                # Eliminamos el archivo original después de copiarlo
-                os.remove(origen_archivo)
+
                 
 
         logger.info('Move finished')
