@@ -18,7 +18,7 @@ def scrap(hash_folder_path, hash_folder, posters_folder_path, downloads_mount_po
     else:
         tmm_command = 'movie'
 
-    file_type = category.split('_')[-1].lower()
+    file_type = "remux"#category.split('_')[-1].lower()
 
 
     last_two_folders = os.path.join(*hash_folder_path.split(os.sep)[-2:])
