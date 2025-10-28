@@ -160,9 +160,9 @@ def create_title(hash_folder_path, category, logger):
     folder_name = os.path.split(folder_to_upload_path)[-1]
     title = re.sub(r'\s?\{tmdb-\d+\}', '', folder_name)
 
-    resolution = '1080p' if category.split('_')[1] == 'fhd' else '2160p'
+    #resolution = '1080p' if category.split('_')[1] == 'fhd' else '2160p'
 
-    return title, resolution, folder_to_upload_path
+    return title, folder_to_upload_path
 
 # Upload the file to Google Drive
 @log_function_call
@@ -295,11 +295,11 @@ def main(args):
 
             logger.debug(f'Output variables from process_downloaded_file() ---> poster_path: {poster_path}. series_telegram_message: {series_telegram_message}')
 
-            title, resolution, folder_to_upload_path = create_title(hash_folder_path=hash_folder_path, category=args.category, logger=logger)
+            title, folder_to_upload_path = create_title(hash_folder_path=hash_folder_path, category=args.category, logger=logger)
 
             title = series_telegram_message if ('series' in args.category and series_telegram_message is not None) else title
 
-            logger.debug(f'Output variables from create_title() ---> title: {title}, resolution: {resolution}, folder_to_upload_path: {folder_to_upload_path}')
+            logger.debug(f'Output variables from create_title() ---> title: {title}, folder_to_upload_path: {folder_to_upload_path}')
         else:
             args.category = 'upload'
             folder_to_upload_path = source_path
@@ -309,7 +309,7 @@ def main(args):
             move_to_local_folder(folder_to_upload_path=folder_to_upload_path, category=args.category, logger=logger)
 
         if args.category != 'upload':
-            send_message.send(template_name='channel_message_template', title=title, resolution=resolution, photo=poster_path)
+            send_message.send(template_name='channel_message_template', title=title, photo=poster_path)
             perform_housekeeping(hash_folder_path=hash_folder_path, logger=logger)
 
     except Exception as e:
