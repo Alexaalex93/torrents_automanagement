@@ -1,2 +1,1 @@
 *Titulo*: {title}
-*Resolucion*: {resolution}
